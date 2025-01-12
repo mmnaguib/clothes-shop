@@ -1,0 +1,31 @@
+.productCards {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 10px 0;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 5px 5px #eaeaea;
+  border-radius: 0 0 4px 4px;
+}
+.product-card img {
+  border-radius: 4px 4px 0 0;
+}
+.product-card b {
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.searchInput {
+  width: 280px;
+  padding: 7px 10px;
+  border: 0;
+  outline: none;
+  border-radius: 4px;
+  font-size: 17px;
+  margin-left: 10px;
+}

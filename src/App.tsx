@@ -1,13 +1,12 @@
-import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import SettingsPage from "./Pages/settings/Config";
 import { ToastContainer } from "react-toastify";
+import { RouterProvider } from "react-router-dom";
+import router from "./routes";
 
 function App() {
   return (
     <div className="App">
-      <SettingsPage />
+      <RouterProvider router={router} />
       <ToastContainer />
     </div>
   );

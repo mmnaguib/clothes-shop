@@ -157,6 +157,7 @@ const Config = () => {
                 height={45}
                 style={{ position: "absolute", top: "28px", left: 0 }}
                 onClick={() => setShowImage(null)}
+                alt=""
               />
             )}
             {errors.image && (
