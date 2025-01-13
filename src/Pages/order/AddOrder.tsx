@@ -114,16 +114,18 @@ const AddOrder: React.FC = () => {
           <table border={1} className="invoicesTable">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Price</th>
+                <th>#</th>
+                <th>المنتج</th>
+                <th>السعر</th>
                 {/* <th>Quantity</th>
                 <th>Total</th> */}
-                <th className="actionCell">Actions</th>
+                <th className="actionCell">العمليات</th>
               </tr>
             </thead>
             <tbody>
-              {invoiceProducts.map((product) => (
+              {invoiceProducts.map((product, index) => (
                 <tr key={product.id}>
+                  <td>{index + 1}</td>
                   <td style={{ width: "500px", maxWidth: "500px" }}>
                     {product.title}
                   </td>

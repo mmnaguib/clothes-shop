@@ -1,0 +1,31 @@
+.inputFieldContainer {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.inputFieldLabel {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #555;
+  font-weight: 600;
+}
+
+.input-field {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.addProductBtn {
+  text-align: center;
+  background: #28a745;
+  width: 200px;
+  margin: auto;
+  color: #fff;
+  border-radius: 4px;
+}

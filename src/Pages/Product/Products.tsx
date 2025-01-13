@@ -1,23 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import ProductService from "../../services/productService";
-import { IProductProps } from "../../interfaces";
+import { ICategoryProps, IProductProps } from "../../interfaces";
 import "./product.css";
 import AddProduct from "./AddProduct";
-
-interface ICategory {
-  id: number;
-  name: string;
-}
 
 const Products = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
   const [search, setSearch] = useState<string>("");
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [categories, setCategories] = useState<ICategoryProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       const res: IProductProps[] = await ProductService.getAllProgucts();
@@ -38,11 +33,11 @@ const Products = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   const filterProducts = useCallback(() => {
     let filtered = products;
@@ -66,7 +61,7 @@ const Products = () => {
 
   useEffect(() => {
     filterProducts();
-  }, [filterProducts, search, selectedCategory]);
+  }, [filterProducts]);
 
   // عرض كارد المنتج
   const productCard = () => {
@@ -86,7 +81,14 @@ const Products = () => {
     </div>
   ) : (
     <>
-      <div style={{ textAlign: "center", marginBottom: "15px" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          marginBottom: "15px",
+          justifyContent: "center",
+        }}
+      >
         {/* البحث في المنتجات */}
         <input
           type="search"

@@ -3,6 +3,7 @@ import React from "react";
 interface AddButtonProps {
   onClick?: () => void;
   label?: string;
+  type?: string;
 }
 
 const Button: React.FC<AddButtonProps> = ({ onClick, label = "Add" }) => {

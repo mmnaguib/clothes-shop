@@ -8,6 +8,7 @@ const Navbar = () => {
         <NavLink to="/config"> الاعدادات</NavLink>
         <NavLink to="/products"> المنتجات</NavLink>
         <NavLink to="/add-order"> إضافة فاتورة</NavLink>
+        <NavLink to="/categories"> الاقسام</NavLink>
       </div>
     </div>
   );

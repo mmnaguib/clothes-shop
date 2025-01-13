@@ -12,7 +12,4 @@ export interface IProductProps {
 export interface ICategoryProps {
   id: number;
   name: string;
-  image: string;
-  creationAt: string;
-  updatedAt: string;
 }
