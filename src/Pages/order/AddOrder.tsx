@@ -84,7 +84,7 @@ const AddOrder: React.FC = () => {
           onChange={(e) => handleSearch(e.target.value)}
           onKeyDown={handleKeyDown}
           className="searchInput"
-          style={{ width: "500px" }}
+          style={{ width: "500px", marginBottom: "50px" }}
         />
         {invoiceProducts.length >= 1 && (
           <button id="printBtn" onClick={() => window.print()}>

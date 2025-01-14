@@ -29,3 +29,30 @@
   color: #fff;
   border-radius: 4px;
 }
+
+.navbar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: #007bff;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 10px;
+  text-align: center;
+}
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 20px;
+  margin-left: 10px;
+  font-weight: bold;
+}
+.navbar a.active {
+  border-bottom: 2px solid #fff;
+}
+.footer {
+  background-color: #007bff;
+  height: 40px;
+  line-height: 40px;
+  color: #fff;
+}

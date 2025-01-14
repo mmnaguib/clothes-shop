@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import InputField from "../../Components/InputField";
 import Button from "../../Components/Button";
 import { ICategoryProps } from "../../interfaces";
+import CategoryService from "../../services/categoryService";
 
-const AddProduct = ({ categories }: { categories: ICategoryProps[] }) => {
+const AddProduct = () => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -13,7 +14,16 @@ const AddProduct = ({ categories }: { categories: ICategoryProps[] }) => {
   const [colorId, setColorId] = useState<number>(0);
   const [sizeId, setSizeId] = useState<number>(0);
   const [categoryId, setCategoryId] = useState<number>(0);
+  const [categories, setCategories] = useState<ICategoryProps[]>([]);
 
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await CategoryService.getAllCategories();
+      setCategories(res);
+    } catch (error) {
+      console.error("خطأ في جلب الاقسام:", error);
+    }
+  }, []);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -22,7 +32,7 @@ const AddProduct = ({ categories }: { categories: ICategoryProps[] }) => {
   };
 
   const addProductHandler = async (e: React.FormEvent) => {
-    e.preventDefault(); // منع إعادة تحميل الصفحة
+    e.preventDefault();
     console.log(
       title,
       description,
@@ -33,8 +43,12 @@ const AddProduct = ({ categories }: { categories: ICategoryProps[] }) => {
       sizeId,
       categoryId
     );
-    setOpenPopup(false); // إغلاق البوب أب بعد الإضافة
+    setOpenPopup(false);
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   return (
     <div>

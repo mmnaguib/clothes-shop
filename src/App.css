@@ -24,30 +24,7 @@
   background-color: #fff;
 }
 
-.navbar {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  background-color: #007bff;
-  height: 40px;
-  line-height: 40px;
-}
-.navbar a {
-  color: #fff;
-  text-decoration: none;
-}
-.navbar a.active {
-  border-bottom: 2px solid #f00;
-}
-
 .content {
   margin: 50px 30px 0;
   min-height: calc(100vh - 90px);
-}
-
-.footer {
-  background-color: #007bff;
-  height: 40px;
-  line-height: 40px;
-  color: #fff;
 }

@@ -8,7 +8,7 @@ const Products = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
   const [search, setSearch] = useState<string>("");
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
-  const [categories, setCategories] = useState<ICategoryProps[]>([]);
+  const [uiCategories, setUiCategories] = useState<ICategoryProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -27,7 +27,7 @@ const Products = () => {
         )
         .map((category) => ({ name: category.name, id: category.id }));
 
-      setCategories(uniqueCategories);
+      setUiCategories(uniqueCategories);
     } catch (error) {
       console.error("خطأ في جلب المنتجات:", error);
     } finally {
@@ -87,6 +87,7 @@ const Products = () => {
           gap: "20px",
           marginBottom: "15px",
           justifyContent: "center",
+          marginTop: "70px",
         }}
       >
         {/* البحث في المنتجات */}
@@ -105,14 +106,14 @@ const Products = () => {
           className="searchInput"
         >
           <option value="">جميع الأقسام</option>
-          {categories.map((category) => (
+          {uiCategories.map((category) => (
             <option key={category.id} value={category.name}>
               {category.name}
             </option>
           ))}
         </select>
 
-        <AddProduct categories={categories} />
+        <AddProduct />
       </div>
 
       {/* ظهور المنتجات المفلترة */}
