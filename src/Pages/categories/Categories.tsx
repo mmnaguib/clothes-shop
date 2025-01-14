@@ -18,6 +18,12 @@ const Categories = () => {
     }
   }, []);
 
+  const deleteCategory = async (_id: string) => {
+    const res = await CategoryService.deleteCateory(_id);
+    console.log(res);
+    setCategories((prev) => prev.filter((p) => p._id !== res.data.id));
+  };
+
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
@@ -28,7 +34,7 @@ const Categories = () => {
     </div>
   ) : (
     <>
-      <AddCateory />
+      <AddCateory setCategories={setCategories} />
       <table border={1} className="invoicesTable">
         <thead>
           <tr>
@@ -39,7 +45,7 @@ const Categories = () => {
         </thead>
         <tbody>
           {categories.map((category, index) => (
-            <tr key={category.id}>
+            <tr key={category._id}>
               <td>{index + 1}</td>
               <td style={{ width: "500px", maxWidth: "500px" }}>
                 {category.name}
@@ -48,13 +54,15 @@ const Categories = () => {
               <td className="actionCell">
                 <button
                   className="deleteInvoiceBtn"
-                  onClick={() =>
-                    setCategories((prev) =>
-                      prev.filter((p) => p.id !== category.id)
-                    )
-                  }
+                  onClick={() => deleteCategory(category._id)}
                 >
                   <span>x</span>
+                </button>
+                <button
+                  className="deleteInvoiceBtn"
+                  onClick={() => deleteCategory(category._id)}
+                >
+                  <span>edit</span>
                 </button>
               </td>
             </tr>

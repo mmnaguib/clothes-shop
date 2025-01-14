@@ -19,15 +19,15 @@ const Products = () => {
       setProducts(res);
       setFilteredProducts(res);
 
-      const uniqueCategories = res
-        .map((product: IProductProps) => product.category)
-        .filter(
-          (category, index, self) =>
-            category && self.findIndex((c) => c.id === category.id) === index
-        )
-        .map((category) => ({ name: category.name, id: category.id }));
+      // const uniqueCategories = res
+      //   .map((product: IProductProps) => product.category)
+      //   .filter(
+      //     (category, index, self) =>
+      //       category && self.findIndex((c) => c._id === category._id) === index
+      //   )
+      //   .map((category) => ({ name: category.name, id: category._id }));
 
-      setUiCategories(uniqueCategories);
+      // setUiCategories(uniqueCategories);
     } catch (error) {
       console.error("خطأ في جلب المنتجات:", error);
     } finally {
@@ -66,7 +66,7 @@ const Products = () => {
   // عرض كارد المنتج
   const productCard = () => {
     return filteredProducts.map((product: IProductProps) => (
-      <div className="product-card" key={product.id}>
+      <div className="product-card" key={product._id}>
         <img src={product.images[0]} alt="" width={"100%"} />
         <b>${product.price}</b>
         <b>{product.title}</b>
@@ -107,7 +107,7 @@ const Products = () => {
         >
           <option value="">جميع الأقسام</option>
           {uiCategories.map((category) => (
-            <option key={category.id} value={category.name}>
+            <option key={category._id} value={category.name}>
               {category.name}
             </option>
           ))}

@@ -1,5 +1,5 @@
 export interface IProductProps {
-  id: number;
+  _id: string;
   category: ICategoryProps;
   creationAt: string;
   description: string;
@@ -10,6 +10,6 @@ export interface IProductProps {
 }
 
 export interface ICategoryProps {
-  id: number;
+  _id: string;
   name: string;
 }

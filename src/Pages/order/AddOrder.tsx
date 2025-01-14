@@ -29,7 +29,7 @@ const AddOrder: React.FC = () => {
       const matches = products.filter(
         (product) =>
           product.title.toLowerCase().includes(term.toLowerCase()) &&
-          !invoiceProducts.some((item) => item.id === product.id)
+          !invoiceProducts.some((item) => item._id === product._id)
       );
       setFilteredProducts(matches);
       setHighlightedIndex(-1);
@@ -39,7 +39,7 @@ const AddOrder: React.FC = () => {
   };
 
   const handleAddProduct = (product: IProductProps) => {
-    if (!invoiceProducts.some((item) => item.id === product.id)) {
+    if (!invoiceProducts.some((item) => item._id === product._id)) {
       setInvoiceProducts((prev) => [...prev, product]);
     }
     setSearchTerm("");
@@ -95,7 +95,7 @@ const AddOrder: React.FC = () => {
           <ul className="filteredProduct">
             {filteredProducts.map((product, index) => (
               <li
-                key={product.id}
+                key={product._id}
                 style={{
                   backgroundColor:
                     highlightedIndex === index ? "#ddd" : "white",
@@ -124,7 +124,7 @@ const AddOrder: React.FC = () => {
             </thead>
             <tbody>
               {invoiceProducts.map((product, index) => (
-                <tr key={product.id}>
+                <tr key={product._id}>
                   <td>{index + 1}</td>
                   <td style={{ width: "500px", maxWidth: "500px" }}>
                     {product.title}
@@ -136,7 +136,7 @@ const AddOrder: React.FC = () => {
                       className="deleteInvoiceBtn"
                       onClick={() =>
                         setInvoiceProducts((prev) =>
-                          prev.filter((p) => p.id !== product.id)
+                          prev.filter((p) => p._id !== product._id)
                         )
                       }
                     >
