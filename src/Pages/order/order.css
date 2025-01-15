@@ -74,7 +74,9 @@
   .footer,
   .searchInput,
   .actionCell,
-  #printBtn {
+  #printBtn,
+  .quantityBtn,
+  .invoiceSaveBtn {
     display: none;
   }
 
