@@ -70,7 +70,7 @@ const Config = () => {
 
   const companyConfig = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (validateInputs()) return;
+    if (!validateInputs()) return;
     const formData = new FormData();
     formData.append("companyName", companyName);
     formData.append("phoneNumber", phoneNumber);

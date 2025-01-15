@@ -14,9 +14,8 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    getCompanyData("6787abdae8a2fa41050502d7");
+    getCompanyData("67881c153d737752bbbcbe78");
   }, [getCompanyData]);
-  console.log(process.env);
 
   return (
     <div>
