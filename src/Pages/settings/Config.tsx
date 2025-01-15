@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Heading from "../../Components/Heading";
 import InputField from "../../Components/InputField";
 import Button from "../../Components/Button";
+import axiosInstance from "../../utils/axiosInstance";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Config = () => {
   const [companyName, setCompanyName] = useState<string>("");
@@ -9,6 +12,7 @@ const Config = () => {
   const [image, setImage] = useState<File | null>(null);
   const [address, setAddress] = useState<string>("");
   const [showImage, setShowImage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // حالات الخطأ لكل حقل
   const [errors, setErrors] = useState({
@@ -24,7 +28,7 @@ const Config = () => {
       const imgUrl = URL.createObjectURL(files[0]);
       setShowImage(imgUrl);
       setImage(files[0]);
-      setErrors((prev) => ({ ...prev, image: "" })); // إزالة الخطأ
+      setErrors((prev) => ({ ...prev, image: "" }));
     } else {
       setErrors((prev) => ({ ...prev, image: "يرجى اختيار صورة للشركة." }));
     }
@@ -64,10 +68,31 @@ const Config = () => {
     return isValid;
   };
 
-  const companyConfig = (e: { preventDefault: () => void }) => {
+  const companyConfig = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (validateInputs()) {
-      console.log(companyName, phoneNumber, address, image);
+    if (validateInputs()) return;
+    const formData = new FormData();
+    formData.append("companyName", companyName);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("address", address);
+    if (image) {
+      formData.append("image", image);
+    }
+
+    try {
+      const res = await axiosInstance.post("companies", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.status === 201) {
+        navigate("/home");
+        toast.success("تم إضافة الشركة بنجاح");
+      }
+    } catch (error) {
+      toast.error("حدث خطأ أثناء إضافة الشركة. يرجى المحاولة مرة أخرى.");
+      console.error("Error adding company:", error);
     }
   };
 

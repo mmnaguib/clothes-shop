@@ -15,8 +15,8 @@ const CategoryService = {
   deleteCateory: async (id: string) => {
     return await axiosInstance.delete(`categories/${id}`);
   },
-  editCateory: async (id: string) => {
-    return await axiosInstance.put(`categories/${id}`);
+  editCateory: async (id: string, name: string) => {
+    return await axiosInstance.put(`categories/${id}`, { name });
   },
 };
 

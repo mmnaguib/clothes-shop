@@ -2,10 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import { ICategoryProps } from "../../interfaces";
 import CategoryService from "../../services/categoryService";
 import AddCateory from "./AddCateory";
+import EditCategory from "./EditCategory";
 
 const Categories = () => {
   const [categories, setCategories] = useState<ICategoryProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [openEditPopup, setOpenEditPopup] = useState<boolean>(false);
+  const [editName, setEditName] = useState<string>("");
+  const [editID, setEditID] = useState<string>("");
   const fetchCategories = useCallback(async () => {
     setLoading(true);
     try {
@@ -20,13 +24,18 @@ const Categories = () => {
 
   const deleteCategory = async (_id: string) => {
     const res = await CategoryService.deleteCateory(_id);
-    console.log(res);
     setCategories((prev) => prev.filter((p) => p._id !== res.data.id));
   };
 
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
+
+  const onEditButtonClick = (category: ICategoryProps) => {
+    setEditID(category._id);
+    setEditName(category.name);
+    setOpenEditPopup(true);
+  };
 
   return loading ? (
     <div className="loader-overlay visible">
@@ -35,6 +44,14 @@ const Categories = () => {
   ) : (
     <>
       <AddCateory setCategories={setCategories} />
+      <EditCategory
+        setCategories={setCategories}
+        openEditPopup={openEditPopup}
+        setOpenEditPopup={setOpenEditPopup}
+        setEditName={setEditName}
+        editName={editName}
+        editID={editID}
+      />
       <table border={1} className="invoicesTable">
         <thead>
           <tr>
@@ -53,16 +70,18 @@ const Categories = () => {
 
               <td className="actionCell">
                 <button
-                  className="deleteInvoiceBtn"
+                  style={{ background: "#f00" }}
+                  className="InvoiceTableBtn"
                   onClick={() => deleteCategory(category._id)}
                 >
-                  <span>x</span>
+                  <i className="fa-solid fa-times fa-lg"></i>
                 </button>
                 <button
-                  className="deleteInvoiceBtn"
-                  onClick={() => deleteCategory(category._id)}
+                  style={{ background: "#666" }}
+                  className="InvoiceTableBtn"
+                  onClick={() => onEditButtonClick(category)}
                 >
-                  <span>edit</span>
+                  <i className="fa-solid fa-edit fa-lg"></i>
                 </button>
               </td>
             </tr>

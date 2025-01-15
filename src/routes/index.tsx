@@ -10,17 +10,22 @@ import Products from "../Pages/Product/Products";
 import AddOrder from "../Pages/order/AddOrder";
 import Home from "../Pages/Home/Home";
 import Categories from "../Pages/categories/Categories";
+import Login from "../Pages/login/Login";
+import ProtectedRoute from "../Components/ProtectedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Root />}>
-        <Route index element={<Home />} />
-        <Route path="config" element={<Config />} />
-        <Route path="products" element={<Products />} />
-        <Route path="add-order" element={<AddOrder />} />
-        <Route path="categories" element={<Categories />} />
-        <Route path="*" element={<PageNotFound />} />
+        <Route index element={<Login />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="config" element={<Config />} />
+          <Route path="products" element={<Products />} />
+          <Route path="add-order" element={<AddOrder />} />
+          <Route path="categories" element={<Categories />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
       </Route>
     </>
   )

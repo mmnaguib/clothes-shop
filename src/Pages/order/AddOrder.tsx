@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { IProductProps } from "../../interfaces";
 import ProductService from "../../services/productService";
 import "./order.css";
@@ -63,14 +63,14 @@ const AddOrder: React.FC = () => {
     }
   };
 
-  // const totalAmount = useMemo(
-  //   () =>
-  //     invoiceProducts.reduce(
-  //       (sum, product) => sum + product.price * product.quantity,
-  //       0
-  //     ),
-  //   [invoiceProducts]
-  // );
+  const totalAmount = useMemo(
+    () =>
+      invoiceProducts.reduce(
+        (sum, product) => sum + product.price * product.quantity,
+        0
+      ),
+    [invoiceProducts]
+  );
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -117,8 +117,8 @@ const AddOrder: React.FC = () => {
                 <th>#</th>
                 <th>المنتج</th>
                 <th>السعر</th>
-                {/* <th>Quantity</th>
-                <th>Total</th> */}
+                <th>Quantity</th>
+                <th>Total</th>
                 <th className="actionCell">العمليات</th>
               </tr>
             </thead>
@@ -130,7 +130,8 @@ const AddOrder: React.FC = () => {
                     {product.title}
                   </td>
                   <td>{product.price}</td>
-
+                  <td>{1}</td>
+                  <td>{product.price * product.quantity}</td>
                   <td className="actionCell">
                     <button
                       className="deleteInvoiceBtn"
@@ -147,9 +148,9 @@ const AddOrder: React.FC = () => {
               ))}
             </tbody>
           </table>
-          {/* <div style={{ marginTop: "20px", fontWeight: "bold" }}>
+          <div style={{ marginTop: "20px", fontWeight: "bold" }}>
             Total Amount: ${totalAmount.toFixed(2)}
-          </div> */}
+          </div>
         </>
       ) : (
         ""

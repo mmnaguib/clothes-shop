@@ -1,19 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react";
 import InputField from "../../Components/InputField";
 import Button from "../../Components/Button";
-import { ICategoryProps } from "../../interfaces";
+import { ICategoryProps, IProductProps } from "../../interfaces";
 import CategoryService from "../../services/categoryService";
+import ProductService from "../../services/productService";
 
-const AddProduct = () => {
+const AddProduct = ({
+  setProducts,
+}: {
+  setProducts: React.Dispatch<React.SetStateAction<IProductProps[]>>;
+}) => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQunatity] = useState<number>(0);
   const [image, setImage] = useState<File | null>(null);
-  const [colorId, setColorId] = useState<number>(0);
-  const [sizeId, setSizeId] = useState<number>(0);
-  const [categoryId, setCategoryId] = useState<number>(0);
+  const [colorIds, setColorIds] = useState<string[]>([]);
+  const [sizeIds, setSizeIds] = useState<string[]>([]);
+  const [categoryId, setCategoryId] = useState<string>("");
   const [categories, setCategories] = useState<ICategoryProps[]>([]);
 
   const fetchCategories = useCallback(async () => {
@@ -31,7 +36,7 @@ const AddProduct = () => {
     }
   };
 
-  const addProductHandler = async (e: React.FormEvent) => {
+  const addProductHandler = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(
       title,
@@ -39,10 +44,29 @@ const AddProduct = () => {
       price,
       quantity,
       image,
-      colorId,
-      sizeId,
+      colorIds,
+      sizeIds,
       categoryId
     );
+
+    const res = await ProductService.addNewProduct(
+      title,
+      description,
+      price,
+      quantity,
+      image,
+      colorIds,
+      sizeIds,
+      categoryId
+    );
+
+    setProducts((prevProducts: IProductProps[]) => [
+      ...prevProducts,
+      res.data.product,
+    ]);
+
+    console.log(res);
+
     setOpenPopup(false);
   };
 
@@ -118,14 +142,26 @@ const AddProduct = () => {
                 <div className="inputFieldContainer">
                   <label className="inputFieldLabel">الالوان المتاحة</label>
                   <select
-                    value={colorId || ""}
-                    onChange={(e) => setColorId(+e.target.value)}
+                    multiple
+                    value={colorIds || ""}
+                    onChange={(e) => {
+                      const selectedColors = Array.from(
+                        e.target.selectedOptions,
+                        (option) => option.value
+                      );
+                      setColorIds(selectedColors);
+                    }}
                     className="input-field"
                     required
                   >
                     <option value="" disabled>
                       اختر
                     </option>
+                    <option value="#f00">Red</option>
+                    <option value="#080">Green</option>
+                    <option value="#000">Black</option>
+                    <option value="#00f">Blue</option>
+                    <option value="Brown">Brown</option>
                   </select>
                 </div>
               </div>
@@ -133,14 +169,26 @@ const AddProduct = () => {
                 <div className="inputFieldContainer">
                   <label className="inputFieldLabel">المقاسات المتاحة</label>
                   <select
-                    value={sizeId || ""}
-                    onChange={(e) => setSizeId(+e.target.value)}
+                    multiple
+                    value={sizeIds || ""}
+                    onChange={(e) => {
+                      const selectedSizes = Array.from(
+                        e.target.selectedOptions,
+                        (option) => option.value
+                      );
+                      setSizeIds(selectedSizes);
+                    }}
                     className="input-field"
                     required
                   >
                     <option value="" disabled>
                       اختر
                     </option>
+                    <option value="sm">Sm</option>
+                    <option value="m">Medium</option>
+                    <option value="l">Large</option>
+                    <option value="xl">XLarge</option>
+                    <option value="2xl">2XLarge</option>
                   </select>
                 </div>
 
@@ -148,7 +196,7 @@ const AddProduct = () => {
                   <label className="inputFieldLabel">القسم</label>
                   <select
                     value={categoryId || ""}
-                    onChange={(e) => setCategoryId(+e.target.value)}
+                    onChange={(e) => setCategoryId(e.target.value)}
                     className="input-field"
                     required
                   >

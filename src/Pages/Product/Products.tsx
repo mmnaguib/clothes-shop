@@ -12,22 +12,26 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
+  const token = localStorage.getItem("authToken")!;
+  const decoded = JSON.parse(atob(token.split(".")[1]));
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       const res: IProductProps[] = await ProductService.getAllProgucts();
+      console.log(res);
       setProducts(res);
       setFilteredProducts(res);
 
-      // const uniqueCategories = res
-      //   .map((product: IProductProps) => product.category)
-      //   .filter(
-      //     (category, index, self) =>
-      //       category && self.findIndex((c) => c._id === category._id) === index
-      //   )
-      //   .map((category) => ({ name: category.name, id: category._id }));
+      const uniqueCategories = res
+        .map((product: IProductProps) => product.categoryId)
+        .filter(
+          (category, index, self) =>
+            category && self.findIndex((c) => c._id === category._id) === index
+        )
+        .map((category) => ({ name: category.name, _id: category._id }));
 
-      // setUiCategories(uniqueCategories);
+      setUiCategories(uniqueCategories);
     } catch (error) {
       console.error("خطأ في جلب المنتجات:", error);
     } finally {
@@ -52,7 +56,7 @@ const Products = () => {
     // فلترة حسب القسم المحدد
     if (selectedCategory) {
       filtered = filtered.filter(
-        (product: IProductProps) => product.category.name === selectedCategory
+        (product: IProductProps) => product.categoryId.name === selectedCategory
       );
     }
 
@@ -63,14 +67,58 @@ const Products = () => {
     filterProducts();
   }, [filterProducts]);
 
-  // عرض كارد المنتج
+  const deleteProduct = async (id: string) => {
+    const res = await ProductService.deleteProducts(id);
+    console.log(res);
+    setProducts((prev) => prev.filter((p) => p._id !== res.data.product._id));
+  };
   const productCard = () => {
     return filteredProducts.map((product: IProductProps) => (
       <div className="product-card" key={product._id}>
-        <img src={product.images[0]} alt="" width={"100%"} />
-        <b>${product.price}</b>
-        <b>{product.title}</b>
-        <b>القسم : {product.category.name}</b>
+        <img
+          src={`${process.env.REACT_APP_SERVER_URL}${product?.image}`}
+          alt=""
+          width={"100%"}
+          height={"100%"}
+        />
+        <b>السعر : ${product.price}</b>
+        <b>المنتج : {product.title}</b>
+        <b>القسم : {product.categoryId.name}</b>
+        <b>الكمية المتاحة : {product.quantity}</b>
+        <b style={{ display: "flex", gap: "15px" }}>
+          الالوان المتاحة :
+          {product.colorId.map((color) => (
+            <span
+              style={{
+                width: "30px",
+                height: "30px",
+                display: "block",
+                background: color,
+              }}
+            ></span>
+          ))}
+        </b>
+        <b style={{ display: "flex", gap: "15px" }}>
+          المقاسات المتاحة :
+          {product.sizeId.map((size) => (
+            <span
+              style={{
+                width: "30px",
+                height: "30px",
+                display: "block",
+                border: "1px solid #f00",
+                textAlign: "center",
+              }}
+            >
+              {size}
+            </span>
+          ))}
+        </b>
+        {decoded.isAdmin && (
+          <button onClick={() => deleteProduct(product._id)}>
+            <i className="fa-solid fa-times"></i>
+          </button>
+        )}
       </div>
     ));
   };
@@ -113,7 +161,7 @@ const Products = () => {
           ))}
         </select>
 
-        <AddProduct />
+        <AddProduct setProducts={setProducts} />
       </div>
 
       {/* ظهور المنتجات المفلترة */}
