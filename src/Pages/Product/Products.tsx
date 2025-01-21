@@ -72,6 +72,7 @@ const Products = () => {
     console.log(res);
     setProducts((prev) => prev.filter((p) => p._id !== res.data.product._id));
   };
+
   const productCard = () => {
     return filteredProducts.map((product: IProductProps) => (
       <div className="product-card" key={product._id}>
@@ -84,36 +85,17 @@ const Products = () => {
         <b>السعر : ${product.price}</b>
         <b>المنتج : {product.title}</b>
         <b>القسم : {product.categoryId.name}</b>
-        <b>الكمية المتاحة : {product.quantity}</b>
-        <b style={{ display: "flex", gap: "15px" }}>
-          الالوان المتاحة :
-          {product.colorId.map((color) => (
-            <span
-              style={{
-                width: "30px",
-                height: "30px",
-                display: "block",
-                background: color,
-              }}
-            ></span>
-          ))}
-        </b>
-        <b style={{ display: "flex", gap: "15px" }}>
-          المقاسات المتاحة :
-          {product.sizeId.map((size) => (
-            <span
-              style={{
-                width: "30px",
-                height: "30px",
-                display: "block",
-                border: "1px solid #f00",
-                textAlign: "center",
-              }}
-            >
-              {size}
-            </span>
-          ))}
-        </b>
+        <div>
+          <b>تفاصيل المخزون:</b>
+          <ul>
+            {product.stock.map((item, index) => (
+              <li key={index}>
+                المقاس: {item.size} | اللون: {item.color} | الكمية:{" "}
+                {item.quantity}
+              </li>
+            ))}
+          </ul>
+        </div>
         {decoded.isAdmin && (
           <button onClick={() => deleteProduct(product._id)}>
             <i className="fa-solid fa-times"></i>

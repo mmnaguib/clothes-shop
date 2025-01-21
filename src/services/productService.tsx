@@ -1,3 +1,4 @@
+import { IStock } from "../interfaces";
 import axiosInstance from "../utils/axiosInstance";
 
 const ProductService = {
@@ -13,20 +14,16 @@ const ProductService = {
     title: string,
     description: string,
     price: number,
-    quantity: number,
     image: File | null,
-    colorIds: string[],
-    sizeIds: string[],
-    categoryId: string
+    categoryId: string,
+    stock: IStock[]
   ) => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("price", price.toString());
-    formData.append("quantity", quantity.toString());
     formData.append("categoryId", categoryId.toString());
-    formData.append("colorId", JSON.stringify(colorIds));
-    formData.append("sizeId", JSON.stringify(sizeIds));
+    formData.append("stock", JSON.stringify(stock));
 
     if (image) {
       formData.append("image", image);

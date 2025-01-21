@@ -5,13 +5,27 @@ export interface IProductProps {
   title: string;
   description: string;
   price: number;
-  quantity: number;
-  colorId: number[];
-  sizeId: number[];
+  stock: IStock[]; // المخزون يحتوي على الحجم واللون
   categoryId: ICategoryProps;
   updatedAt: string;
 }
 
+export interface IFilteredProduct {
+  _id: string;
+  creationAt: string;
+  image: string;
+  title: string;
+  description: string;
+  price: number;
+  stock: IStock[]; // لا يزال يحتوي على المخزون بالكامل
+  categoryId: ICategoryProps;
+  updatedAt: string;
+  size: string;
+  color: string;
+  quantity: number;
+  stockItemId: string; // معرف مزيج الحجم واللون
+  productId: string;
+}
 export interface ICategoryProps {
   _id: string;
   name: string;
@@ -46,4 +60,10 @@ export interface IInvoiceProducts {
   price: number;
   total: number;
   _id: string;
+}
+
+export interface IStock {
+  size: string;
+  color: string;
+  quantity: number;
 }

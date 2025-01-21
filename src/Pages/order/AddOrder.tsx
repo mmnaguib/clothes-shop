@@ -1,13 +1,26 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { IProductProps } from "../../interfaces";
+import { IFilteredProduct, IProductProps } from "../../interfaces";
 import ProductService from "../../services/productService";
 import "./order.css";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
+
 const AddOrder: React.FC = () => {
-  const [invoiceProducts, setInvoiceProducts] = useState<IProductProps[]>([]);
+  const [invoiceProducts, setInvoiceProducts] = useState<
+    {
+      productId: string;
+      title: string;
+      size: string;
+      color: string;
+      quantity: number;
+      price: number;
+      total: number;
+    }[]
+  >([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<IFilteredProduct[]>(
+    []
+  );
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [products, setProducts] = useState<IProductProps[]>([]);
   const [customerName, setCustomerName] = useState<string>("");
@@ -18,23 +31,40 @@ const AddOrder: React.FC = () => {
       setProducts(res);
     } catch (error) {
       console.error("خطأ في جلب المنتجات:", error);
-    } finally {
     }
   };
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
   const handleSearch = (term: string) => {
     setSearchTerm(term);
 
     if (term) {
-      const matches = products.filter(
-        (product) =>
-          product.title.toLowerCase().includes(term.toLowerCase()) &&
-          !invoiceProducts.some((item) => item._id === product._id)
-      );
-      setFilteredProducts(matches);
+      const matches = products.flatMap((product) => {
+        if (product.title.toLowerCase().includes(term.toLowerCase())) {
+          return product.stock.map((stockItem) => ({
+            _id: product._id,
+            creationAt: product.creationAt,
+            image: product.image,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            stock: product.stock,
+            categoryId: product.categoryId,
+            updatedAt: product.updatedAt,
+            size: stockItem.size,
+            color: stockItem.color,
+            quantity: stockItem.quantity,
+            stockItemId: `${product._id}-${stockItem.size}-${stockItem.color}`,
+            productId: product._id, // إضافة productId هنا
+          }));
+        }
+        return [];
+      });
+
+      setFilteredProducts(matches); // تعيين المزيجات المفلترة
       setHighlightedIndex(-1);
     } else {
       setFilteredProducts([]);
@@ -52,49 +82,79 @@ const AddOrder: React.FC = () => {
       setHighlightedIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : filteredProducts.length - 1
       );
-    } else if (e.key === "Enter" && highlightedIndex >= 0) {
-      handleAddProduct(filteredProducts[highlightedIndex]);
     }
   };
 
-  const increaseQuantity = (id: string) => {
-    setInvoiceProducts((prev) =>
-      prev.map((product) =>
-        product._id === id
-          ? { ...product, quantity: product.quantity + 1 }
-          : product
-      )
+  const handleAddProduct = (product: {
+    productId: string;
+    size: string;
+    color: string;
+    price: number;
+    quantity: number;
+    title: string;
+    stockItemId: string;
+  }) => {
+    const existingProductIndex = invoiceProducts.findIndex(
+      (item) =>
+        item.productId === product.productId &&
+        item.size === product.size &&
+        item.color === product.color
     );
-  };
 
-  const decreaseQuantity = (id: string) => {
-    setInvoiceProducts((prev) =>
-      prev.map((product) =>
-        product._id === id && product.quantity > 1
-          ? { ...product, quantity: product.quantity - 1 }
-          : product
-      )
-    );
-  };
-
-  const handleAddProduct = (product: IProductProps) => {
-    if (!invoiceProducts.some((item) => item._id === product._id)) {
+    if (existingProductIndex !== -1) {
+      // إذا كان المنتج بنفس الحجم واللون موجودًا، قم بزيادة الكمية
+      increaseQuantity(existingProductIndex);
+    } else {
+      // إضافة المنتج كمزيج جديد
       setInvoiceProducts((prev) => [
         ...prev,
-        { ...product, quantity: 1 }, // إضافة الكمية الافتراضية
+        {
+          productId: product.productId,
+          title: product.title,
+          size: product.size,
+          color: product.color,
+          quantity: 1,
+          price: product.price,
+          total: product.price,
+        },
       ]);
     }
+
     setSearchTerm("");
     setFilteredProducts([]);
     setHighlightedIndex(-1);
   };
 
+  const increaseQuantity = (index: number) => {
+    setInvoiceProducts((prev) =>
+      prev.map((item, idx) =>
+        idx === index
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+              total: (item.quantity + 1) * item.price,
+            }
+          : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (index: number) => {
+    setInvoiceProducts((prev) =>
+      prev.map((item, idx) =>
+        idx === index && item.quantity > 1
+          ? {
+              ...item,
+              quantity: item.quantity - 1,
+              total: (item.quantity - 1) * item.price,
+            }
+          : item
+      )
+    );
+  };
+
   const totalAmount = useMemo(
-    () =>
-      invoiceProducts.reduce(
-        (sum, product) => sum + product.price * product.quantity,
-        0
-      ),
+    () => invoiceProducts.reduce((sum, item) => sum + item.total, 0),
     [invoiceProducts]
   );
 
@@ -111,13 +171,7 @@ const AddOrder: React.FC = () => {
 
     const invoiceData = {
       customerName,
-      products: invoiceProducts.map((product) => ({
-        productId: product._id,
-        title: product.title,
-        quantity: product.quantity,
-        price: product.price,
-        total: product.quantity * product.price,
-      })),
+      products: invoiceProducts,
       totalAmount,
     };
 
@@ -137,146 +191,89 @@ const AddOrder: React.FC = () => {
   return (
     <div style={{ textAlign: "center" }}>
       <h1>فاتورة</h1>
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="اسم العميل"
-          value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
-          style={{
-            width: "300px",
-            marginBottom: "10px",
-            padding: "8px",
-            fontSize: "16px",
-          }}
-        />
-      </div>
-
-      <div style={{ position: "relative" }}>
-        <input
-          type="text"
-          placeholder="ابحث عن المنتجات ......"
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="searchInput"
-          style={{ width: "500px", marginBottom: "50px" }}
-        />
-        {filteredProducts.length > 0 && (
-          <ul className="filteredProduct">
-            {filteredProducts.map((product, index) =>
-              product.quantity >= 1 ? (
-                <>
-                  <li
-                    key={product._id}
-                    style={{
-                      backgroundColor:
-                        highlightedIndex === index ? "#ddd" : "white",
-                    }}
-                    onClick={() => handleAddProduct(product)}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                  >
-                    {product.title}
-                  </li>
-                </>
-              ) : (
-                ""
-              )
-            )}
-          </ul>
-        )}
-      </div>
-      {invoiceProducts.length > 0 ? (
+      <input
+        type="text"
+        placeholder="اسم العميل"
+        value={customerName}
+        onChange={(e) => setCustomerName(e.target.value)}
+        style={{
+          width: "300px",
+          marginBottom: "20px",
+          padding: "10px",
+        }}
+      />
+      <input
+        type="text"
+        placeholder="ابحث عن المنتجات ......"
+        value={searchTerm}
+        onChange={(e) => handleSearch(e.target.value)}
+        onKeyDown={handleKeyDown}
+        style={{
+          width: "500px",
+          marginBottom: "20px",
+          padding: "10px",
+        }}
+      />
+      {filteredProducts.length > 0 && (
+        <ul className="filteredProduct">
+          {filteredProducts.map((product) => (
+            <li
+              key={product.stockItemId}
+              onClick={() => handleAddProduct(product)}
+            >
+              {product.title} - {product.size} - {product.color} (متوفر:{" "}
+              {product.quantity})
+            </li>
+          ))}
+        </ul>
+      )}
+      {invoiceProducts.length > 0 && (
         <>
-          <table border={1} className="invoicesTable">
+          <table className="invoicesTable">
             <thead>
               <tr>
-                <th>#</th>
                 <th>المنتج</th>
+                <th>المقاس</th>
+                <th>اللون</th>
+                <th>الكمية</th>
                 <th>السعر</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th className="actionCell">العمليات</th>
+                <th>الإجمالي</th>
+                <th>إجراءات</th>
               </tr>
             </thead>
             <tbody>
-              {invoiceProducts.map((product, index) => (
-                <tr key={product._id}>
-                  <td>{index + 1}</td>
-                  <td style={{ width: "500px", maxWidth: "500px" }}>
-                    {product.title}
-                  </td>
-                  <td>{product.price}</td>
+              {invoiceProducts.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.title}</td>
+                  <td>{item.size}</td>
+                  <td>{item.color}</td>
                   <td>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <button
-                        className="quantityBtn"
-                        onClick={() => decreaseQuantity(product._id)}
-                        style={{
-                          padding: "5px 10px",
-                          cursor:
-                            product.quantity > 1 ? "pointer" : "not-allowed",
-                        }}
-                      >
-                        -
-                      </button>
-                      <span>{product.quantity}</span>
-                      <button
-                        className="quantityBtn"
-                        onClick={() => increaseQuantity(product._id)}
-                        style={{ padding: "5px 10px", cursor: "pointer" }}
-                      >
-                        +
-                      </button>
-                    </div>
+                    <button onClick={() => decreaseQuantity(index)}>-</button>
+                    {item.quantity}
+                    <button onClick={() => increaseQuantity(index)}>+</button>
                   </td>
-                  <td>{(product.price * product.quantity).toFixed(2)}</td>
-                  <td className="actionCell">
+                  <td>{item.price}</td>
+                  <td>{item.total.toFixed(2)}</td>
+                  <td>
                     <button
-                      className="deleteInvoiceBtn"
                       onClick={() =>
                         setInvoiceProducts((prev) =>
-                          prev.filter((p) => p._id !== product._id)
+                          prev.filter((_, idx) => idx !== index)
                         )
                       }
                     >
-                      <span>x</span>
+                      حذف
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div style={{ marginTop: "20px", fontWeight: "bold" }}>
-            Total Amount: ${totalAmount.toFixed(2)}
+          <div>
+            <b>الإجمالي: {totalAmount.toFixed(2)}</b>
           </div>
-
-          <div style={{ marginTop: "20px" }}>
-            <button
-              className="invoiceSaveBtn"
-              onClick={saveInvoice}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "green",
-                color: "white",
-                fontSize: "16px",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              حفظ الفاتورة
-            </button>
-          </div>
+          <button onClick={saveInvoice}>حفظ الفاتورة</button>
         </>
-      ) : (
-        ""
       )}
     </div>
   );

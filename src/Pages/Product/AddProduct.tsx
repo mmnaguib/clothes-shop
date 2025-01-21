@@ -14,12 +14,21 @@ const AddProduct = ({
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
-  const [quantity, setQunatity] = useState<number>(0);
   const [image, setImage] = useState<File | null>(null);
-  const [colorIds, setColorIds] = useState<string[]>([]);
-  const [sizeIds, setSizeIds] = useState<string[]>([]);
   const [categoryId, setCategoryId] = useState<string>("");
   const [categories, setCategories] = useState<ICategoryProps[]>([]);
+  const [stock, setStock] = useState<
+    { size: string; color: string; quantity: number }[]
+  >([]);
+  const [newStockEntry, setNewStockEntry] = useState<{
+    size: string;
+    color: string;
+    quantity: number;
+  }>({
+    size: "",
+    color: "",
+    quantity: 0,
+  });
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -29,6 +38,7 @@ const AddProduct = ({
       console.error("خطأ في جلب الاقسام:", error);
     }
   }, []);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -36,28 +46,27 @@ const AddProduct = ({
     }
   };
 
+  const handleAddStockEntry = () => {
+    if (
+      newStockEntry.size &&
+      newStockEntry.color &&
+      newStockEntry.quantity > 0
+    ) {
+      setStock([...stock, newStockEntry]);
+      setNewStockEntry({ size: "", color: "", quantity: 0 });
+    }
+  };
+
   const addProductHandler = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(
-      title,
-      description,
-      price,
-      quantity,
-      image,
-      colorIds,
-      sizeIds,
-      categoryId
-    );
 
     const res = await ProductService.addNewProduct(
       title,
       description,
       price,
-      quantity,
       image,
-      colorIds,
-      sizeIds,
-      categoryId
+      categoryId,
+      stock // إرسال بيانات الـ stock
     );
 
     setProducts((prevProducts: IProductProps[]) => [
@@ -123,93 +132,99 @@ const AddProduct = ({
                   min={1}
                 />
                 <InputField
-                  type="number"
-                  label="الكمية المتاحة"
-                  onChange={(e) => setQunatity(+e.target.value)}
-                  value={quantity}
-                  required
-                  min={1}
-                  step={1}
-                />
-              </div>
-              <div style={{ display: "flex", gap: "15px" }}>
-                <InputField
                   type="file"
                   label="صورة المنتج"
                   onChange={handleFileChange}
                   required
                 />
-                <div className="inputFieldContainer">
-                  <label className="inputFieldLabel">الالوان المتاحة</label>
-                  <select
-                    multiple
-                    value={colorIds || ""}
-                    onChange={(e) => {
-                      const selectedColors = Array.from(
-                        e.target.selectedOptions,
-                        (option) => option.value
-                      );
-                      setColorIds(selectedColors);
-                    }}
-                    className="input-field"
-                    required
-                  >
-                    <option value="" disabled>
-                      اختر
-                    </option>
-                    <option value="#f00">Red</option>
-                    <option value="#080">Green</option>
-                    <option value="#000">Black</option>
-                    <option value="#00f">Blue</option>
-                    <option value="Brown">Brown</option>
-                  </select>
-                </div>
               </div>
-              <div style={{ display: "flex", gap: "15px" }}>
-                <div className="inputFieldContainer">
-                  <label className="inputFieldLabel">المقاسات المتاحة</label>
+              <div style={{ marginTop: "15px" }}>
+                <h4>إدارة المخزون:</h4>
+                <div style={{ display: "flex", gap: "15px" }}>
                   <select
-                    multiple
-                    value={sizeIds || ""}
-                    onChange={(e) => {
-                      const selectedSizes = Array.from(
-                        e.target.selectedOptions,
-                        (option) => option.value
-                      );
-                      setSizeIds(selectedSizes);
+                    value={newStockEntry.size}
+                    onChange={(e) =>
+                      setNewStockEntry((prev) => ({
+                        ...prev,
+                        size: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="" disabled>
+                      اختر المقاس
+                    </option>
+                    <option value="S">Small</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                    <option value="XL">XLarge</option>
+                  </select>
+                  <select
+                    value={newStockEntry.color}
+                    onChange={(e) =>
+                      setNewStockEntry((prev) => ({
+                        ...prev,
+                        color: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="" disabled>
+                      اختر اللون
+                    </option>
+                    <option value="Red">Red</option>
+                    <option value="Green">Green</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Black">Black</option>
+                  </select>
+                  <InputField
+                    type="number"
+                    label="الكمية"
+                    onChange={(e) =>
+                      setNewStockEntry((prev) => ({
+                        ...prev,
+                        quantity: +e.target.value,
+                      }))
+                    }
+                    value={newStockEntry.quantity}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddStockEntry}
+                    style={{
+                      background: "#28a745",
+                      color: "#fff",
+                      padding: "5px 10px",
+                      border: "none",
+                      borderRadius: "5px",
                     }}
-                    className="input-field"
-                    required
                   >
-                    <option value="" disabled>
-                      اختر
-                    </option>
-                    <option value="sm">Sm</option>
-                    <option value="m">Medium</option>
-                    <option value="l">Large</option>
-                    <option value="xl">XLarge</option>
-                    <option value="2xl">2XLarge</option>
-                  </select>
+                    أضف
+                  </button>
                 </div>
-
-                <div className="inputFieldContainer">
-                  <label className="inputFieldLabel">القسم</label>
-                  <select
-                    value={categoryId || ""}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    className="input-field"
-                    required
-                  >
-                    <option value="" disabled>
-                      اختر
+                <ul>
+                  {stock.map((item, index) => (
+                    <li key={index}>
+                      {item.size} - {item.color} - {item.quantity}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="inputFieldContainer">
+                <label className="inputFieldLabel">القسم</label>
+                <select
+                  value={categoryId || ""}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="input-field"
+                  required
+                >
+                  <option value="" disabled>
+                    اختر
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category._id}>
+                      {category.name}
                     </option>
-                    {categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  ))}
+                </select>
               </div>
               <div className="addProductBtn">
                 <Button type="submit" label="أضف منتج" />
