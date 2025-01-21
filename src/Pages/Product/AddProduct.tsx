@@ -27,7 +27,7 @@ const AddProduct = ({
   }>({
     size: "",
     color: "",
-    quantity: 0,
+    quantity: 1,
   });
 
   const fetchCategories = useCallback(async () => {
@@ -116,7 +116,7 @@ const AddProduct = ({
                 />
                 <InputField
                   type="text"
-                  label="وصف المنتج"
+                  label="كود المنتج"
                   onChange={(e) => setDescription(e.target.value)}
                   value={description}
                   required
@@ -138,67 +138,91 @@ const AddProduct = ({
                   required
                 />
               </div>
-              <div style={{ marginTop: "15px" }}>
-                <h4>إدارة المخزون:</h4>
-                <div style={{ display: "flex", gap: "15px" }}>
-                  <select
-                    value={newStockEntry.size}
-                    onChange={(e) =>
-                      setNewStockEntry((prev) => ({
-                        ...prev,
-                        size: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="" disabled>
-                      اختر المقاس
-                    </option>
-                    <option value="S">Small</option>
-                    <option value="M">Medium</option>
-                    <option value="L">Large</option>
-                    <option value="XL">XLarge</option>
-                  </select>
-                  <select
-                    value={newStockEntry.color}
-                    onChange={(e) =>
-                      setNewStockEntry((prev) => ({
-                        ...prev,
-                        color: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="" disabled>
-                      اختر اللون
-                    </option>
-                    <option value="Red">Red</option>
-                    <option value="Green">Green</option>
-                    <option value="Blue">Blue</option>
-                    <option value="Black">Black</option>
-                  </select>
-                  <InputField
-                    type="number"
-                    label="الكمية"
-                    onChange={(e) =>
-                      setNewStockEntry((prev) => ({
-                        ...prev,
-                        quantity: +e.target.value,
-                      }))
-                    }
-                    value={newStockEntry.quantity}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddStockEntry}
-                    style={{
-                      background: "#28a745",
-                      color: "#fff",
-                      padding: "5px 10px",
-                      border: "none",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    أضف
-                  </button>
+              <div
+                style={{
+                  border: "1px solid #eaeaea",
+                  padding: "5px 10px",
+                }}
+              >
+                <h4 style={{ margin: 0 }}>إدارة المخزون:</h4>
+                <div className="stockContent">
+                  <div>
+                    <select
+                      value={newStockEntry.size}
+                      onChange={(e) =>
+                        setNewStockEntry((prev) => ({
+                          ...prev,
+                          size: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="" disabled>
+                        اختر المقاس
+                      </option>
+                      <option value="M">Medium</option>
+                      <option value="L">Large</option>
+                      <option value="XL">XLarge</option>
+                      <option value="2XL">2XLarge</option>
+                      <option value="3XL">3XLarge</option>
+                    </select>
+                  </div>
+                  <div>
+                    <select
+                      value={newStockEntry.color}
+                      onChange={(e) =>
+                        setNewStockEntry((prev) => ({
+                          ...prev,
+                          color: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="" disabled>
+                        اختر اللون
+                      </option>
+                      <option value="أحمر">أحمر</option>
+                      <option value="أخضر">أخضر</option>
+                      <option value="أزرق">أزرق</option>
+                      <option value="أسود">أسود</option>
+                      <option value="أبيض">أبيض</option>
+                      <option value="أصفر">أصفر</option>
+                      <option value="وردي">وردي</option>
+                      <option value="أرجواني">أرجواني</option>
+                      <option value="برتقالي">برتقالي</option>
+                      <option value="بني">بني</option>
+                      <option value="رمادي">رمادي</option>
+                      <option value="بيج">بيج</option>
+                    </select>
+                  </div>
+                  <div>
+                    <input
+                      type="number"
+                      placeholder="ادخل الكمية"
+                      onChange={(e) =>
+                        setNewStockEntry((prev) => ({
+                          ...prev,
+                          quantity: +e.target.value,
+                        }))
+                      }
+                      value={newStockEntry.quantity}
+                      min={1}
+                    />
+                  </div>
+                  ,
+                  <div>
+                    <button
+                      type="button"
+                      onClick={handleAddStockEntry}
+                      style={{
+                        background: "#28a745",
+                        color: "#fff",
+                        padding: "5px 10px",
+                        border: "none",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      أضف
+                    </button>
+                  </div>
                 </div>
                 <ul>
                   {stock.map((item, index) => (

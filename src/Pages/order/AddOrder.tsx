@@ -4,8 +4,10 @@ import ProductService from "../../services/productService";
 import "./order.css";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AddOrder: React.FC = () => {
+  const navigate = useNavigate();
   const [invoiceProducts, setInvoiceProducts] = useState<
     {
       productId: string;
@@ -186,6 +188,7 @@ const AddOrder: React.FC = () => {
       console.error("خطأ أثناء حفظ الفاتورة:", error);
       alert("حدث خطأ أثناء حفظ الفاتورة.");
     }
+    navigate("/orders");
   };
 
   return (

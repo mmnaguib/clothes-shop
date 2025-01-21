@@ -14,7 +14,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    getCompanyData("67881c153d737752bbbcbe78");
+    getCompanyData("678fecf48d384a6454d11bdb");
   }, [getCompanyData]);
 
   return (

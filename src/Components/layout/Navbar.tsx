@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const navigate = useNavigate();
   const logoutHandler = () => {
-    localStorage.removeItem("authToken");
+    localStorage.removeItem("tiaStoreToken");
     window.location.reload();
     navigate("/");
   };

@@ -12,7 +12,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const token = localStorage.getItem("authToken")!;
+  const token = localStorage.getItem("tiaStoreToken")!;
   const decoded = JSON.parse(atob(token.split(".")[1]));
 
   const fetchProducts = useCallback(async () => {

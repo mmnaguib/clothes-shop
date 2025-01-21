@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const authToken = localStorage.getItem("authToken");
+  const tiaStoreToken = localStorage.getItem("tiaStoreToken");
 
-  return authToken ? <Outlet /> : <Navigate to="/" />;
+  return tiaStoreToken ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default ProtectedRoute;

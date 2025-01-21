@@ -29,7 +29,7 @@ const Login = () => {
       if (res.status === 200) {
         navigate("/home");
         toast.success("تم تسجيل الدخول بنجاح ");
-        localStorage.setItem("authToken", res.data.token);
+        localStorage.setItem("tiaStoreToken", res.data.token);
         window.location.reload();
       } else {
         setUserName("");

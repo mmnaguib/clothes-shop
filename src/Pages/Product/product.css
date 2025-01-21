@@ -65,3 +65,21 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+.stockContent{
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stockContent > div {
+  flex-grow: 1;
+}
+.stockContent select,
+.stockContent input{
+  width: 100%;
+  border: 0;
+  box-shadow: 0 0 5px 1px #eaeaea;
+  padding: 5px 10px;
+  outline: none;
+}

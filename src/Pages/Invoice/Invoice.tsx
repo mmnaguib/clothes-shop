@@ -2,14 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { IConfig, IInvoice } from "../../interfaces";
-import Button from "../../Components/Button";
-
 const Invoice = () => {
   const { id } = useParams();
   const [invoiceDetail, setInvoiceDetail] = useState<IInvoice | null>(null);
   const [campany, setCampany] = useState<IConfig | null>(null);
 
-  const token = localStorage.getItem("authToken")!;
+  const token = localStorage.getItem("tiaStoreToken")!;
   const decoded = JSON.parse(atob(token.split(".")[1]));
   const getOrderDetail = useCallback(async (id: string) => {
     const req = await axiosInstance
@@ -29,7 +27,7 @@ const Invoice = () => {
   }, []);
 
   useEffect(() => {
-    getCompanyData("67881c153d737752bbbcbe78");
+    getCompanyData("678fecf48d384a6454d11bdb");
   }, [getCompanyData]);
 
   const totalQuantity = useMemo(() => {

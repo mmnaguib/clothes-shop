@@ -14,6 +14,7 @@ import Login from "../Pages/login/Login";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Orders from "../Pages/order/Orders";
 import Invoice from "../Pages/Invoice/Invoice";
+const isLoggedIn = !!localStorage.getItem("tiaStoreToken");
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,13 +22,25 @@ const router = createBrowserRouter(
       <Route path="/" element={<Root />}>
         <Route index element={<Login />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="config" element={<Config />} />
-          <Route path="products" element={<Products />} />
-          <Route path="add-order" element={<AddOrder />} />
-          <Route path="categories" element={<Categories />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="orders/:id" element={<Invoice />} />
+          <Route path="/home" element={isLoggedIn ? <Home /> : <Login />} />
+          <Route path="config" element={isLoggedIn ? <Config /> : <Login />} />
+          <Route
+            path="products"
+            element={isLoggedIn ? <Products /> : <Login />}
+          />
+          <Route
+            path="add-order"
+            element={isLoggedIn ? <AddOrder /> : <Login />}
+          />
+          <Route
+            path="categories"
+            element={isLoggedIn ? <Categories /> : <Login />}
+          />
+          <Route path="orders" element={isLoggedIn ? <Orders /> : <Login />} />
+          <Route
+            path="orders/:id"
+            element={isLoggedIn ? <Invoice /> : <Login />}
+          />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Route>
