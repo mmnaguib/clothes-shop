@@ -14,7 +14,6 @@ const AddCateory = ({
   const addNewCategory = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     const res = await CategoryService.addNewCateory(name);
-    console.log(res);
     setName("");
     setOpenPopup(false);
     setCategories((prevCategories: ICategoryProps[]) => [

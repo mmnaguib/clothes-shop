@@ -59,6 +59,7 @@ export interface IInvoiceProducts {
   quantity: number;
   price: number;
   total: number;
+  color: string;
   _id: string;
 }
 

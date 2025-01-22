@@ -56,3 +56,14 @@
   line-height: 40px;
   color: #fff;
 }
+
+.logoutBtn {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  outline: none;
+  border-radius: 4px;
+}

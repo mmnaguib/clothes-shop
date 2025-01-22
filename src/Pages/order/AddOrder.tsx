@@ -17,6 +17,7 @@ const AddOrder: React.FC = () => {
       quantity: number;
       price: number;
       total: number;
+      availableQuantity: number;
     }[]
   >([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,22 +47,24 @@ const AddOrder: React.FC = () => {
     if (term) {
       const matches = products.flatMap((product) => {
         if (product.title.toLowerCase().includes(term.toLowerCase())) {
-          return product.stock.map((stockItem) => ({
-            _id: product._id,
-            creationAt: product.creationAt,
-            image: product.image,
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            stock: product.stock,
-            categoryId: product.categoryId,
-            updatedAt: product.updatedAt,
-            size: stockItem.size,
-            color: stockItem.color,
-            quantity: stockItem.quantity,
-            stockItemId: `${product._id}-${stockItem.size}-${stockItem.color}`,
-            productId: product._id, // إضافة productId هنا
-          }));
+          return product.stock
+            .filter((stockItem) => stockItem.quantity > 0)
+            .map((stockItem) => ({
+              _id: product._id,
+              creationAt: product.creationAt,
+              image: product.image,
+              title: product.title,
+              description: product.description,
+              price: product.price,
+              stock: product.stock,
+              categoryId: product.categoryId,
+              updatedAt: product.updatedAt,
+              size: stockItem.size,
+              color: stockItem.color,
+              quantity: stockItem.quantity,
+              stockItemId: `${product._id}-${stockItem.size}-${stockItem.color}`,
+              productId: product._id, // إضافة productId هنا
+            }));
         }
         return [];
       });
@@ -104,10 +107,8 @@ const AddOrder: React.FC = () => {
     );
 
     if (existingProductIndex !== -1) {
-      // إذا كان المنتج بنفس الحجم واللون موجودًا، قم بزيادة الكمية
       increaseQuantity(existingProductIndex);
     } else {
-      // إضافة المنتج كمزيج جديد
       setInvoiceProducts((prev) => [
         ...prev,
         {
@@ -118,6 +119,7 @@ const AddOrder: React.FC = () => {
           quantity: 1,
           price: product.price,
           total: product.price,
+          availableQuantity: product.quantity,
         },
       ]);
     }
@@ -194,45 +196,55 @@ const AddOrder: React.FC = () => {
   return (
     <div style={{ textAlign: "center" }}>
       <h1>فاتورة</h1>
-      <input
-        type="text"
-        placeholder="اسم العميل"
-        value={customerName}
-        onChange={(e) => setCustomerName(e.target.value)}
-        style={{
-          width: "300px",
-          marginBottom: "20px",
-          padding: "10px",
-        }}
-      />
-      <input
-        type="text"
-        placeholder="ابحث عن المنتجات ......"
-        value={searchTerm}
-        onChange={(e) => handleSearch(e.target.value)}
-        onKeyDown={handleKeyDown}
-        style={{
-          width: "500px",
-          marginBottom: "20px",
-          padding: "10px",
-        }}
-      />
-      {filteredProducts.length > 0 && (
-        <ul className="filteredProduct">
-          {filteredProducts.map((product) => (
-            <li
-              key={product.stockItemId}
-              onClick={() => handleAddProduct(product)}
-            >
-              {product.title} - {product.size} - {product.color} (متوفر:{" "}
-              {product.quantity})
-            </li>
-          ))}
-        </ul>
-      )}
+      <div style={{ position: "relative" }}>
+        <input
+          type="text"
+          placeholder="اسم العميل"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+          style={{
+            width: "300px",
+            marginBottom: "20px",
+            padding: "10px",
+            outline: "none",
+            border: 0,
+            marginLeft: "10px",
+            borderRadius: "4px",
+          }}
+        />
+        <input
+          type="text"
+          placeholder="ابحث عن المنتجات ......"
+          value={searchTerm}
+          onChange={(e) => handleSearch(e.target.value)}
+          onKeyDown={handleKeyDown}
+          style={{
+            width: "500px",
+            marginBottom: "20px",
+            padding: "10px",
+            outline: "none",
+            border: 0,
+            marginLeft: "10px",
+            borderRadius: "4px",
+          }}
+        />
+        {filteredProducts.length > 0 && (
+          <ul className="filteredProduct">
+            {filteredProducts.map((product) => (
+              <li
+                key={product.stockItemId}
+                onClick={() => handleAddProduct(product)}
+              >
+                {product.title} - {product.size} - {product.color} (متوفر:{" "}
+                {product.quantity})
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       {invoiceProducts.length > 0 && (
         <>
-          <table className="invoicesTable">
+          <table className="invoicesTable" border={1}>
             <thead>
               <tr>
                 <th>المنتج</th>
@@ -250,10 +262,44 @@ const AddOrder: React.FC = () => {
                   <td>{item.title}</td>
                   <td>{item.size}</td>
                   <td>{item.color}</td>
-                  <td>
-                    <button onClick={() => decreaseQuantity(index)}>-</button>
+                  <td
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "20px",
+                      border: 0,
+                    }}
+                  >
+                    <button
+                      onClick={() => decreaseQuantity(index)}
+                      disabled={item.quantity == 1}
+                      style={{
+                        cursor: item.quantity === 1 ? "not-allowed" : "pointer",
+                        opacity:
+                          item.quantity === item.availableQuantity ? 0.6 : 1,
+                        border: 0,
+                        background: "transparent",
+                      }}
+                    >
+                      <i className="fa-solid fa-minus"></i>
+                    </button>
                     {item.quantity}
-                    <button onClick={() => increaseQuantity(index)}>+</button>
+                    <button
+                      onClick={() => increaseQuantity(index)}
+                      disabled={item.quantity === item.availableQuantity}
+                      style={{
+                        cursor:
+                          item.quantity === item.availableQuantity
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity:
+                          item.quantity === item.availableQuantity ? 0.6 : 1,
+                        border: 0,
+                        background: "transparent",
+                      }}
+                    >
+                      <i className="fa-solid fa-plus"></i>
+                    </button>
                   </td>
                   <td>{item.price}</td>
                   <td>{item.total.toFixed(2)}</td>
@@ -265,15 +311,18 @@ const AddOrder: React.FC = () => {
                         )
                       }
                     >
-                      حذف
+                      <i className="fa-solid fa-times"></i>
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div>
-            <b>الإجمالي: {totalAmount.toFixed(2)}</b>
+          <div style={{ fontSize: "30px", textAlign: "right" }}>
+            <b>
+              الإجمالي: {totalAmount.toFixed(2)} جنيه{" "}
+              <i className="fa-solid fa-money-bill"></i>
+            </b>
           </div>
           <button onClick={saveInvoice}>حفظ الفاتورة</button>
         </>

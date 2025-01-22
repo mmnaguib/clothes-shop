@@ -74,8 +74,6 @@ const AddProduct = ({
       res.data.product,
     ]);
 
-    console.log(res);
-
     setOpenPopup(false);
   };
 

@@ -25,7 +25,6 @@ const Login = () => {
         userName,
         password,
       });
-      console.log(res);
       if (res.status === 200) {
         navigate("/home");
         toast.success("تم تسجيل الدخول بنجاح ");

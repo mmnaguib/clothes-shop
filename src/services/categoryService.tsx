@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import axiosInstance from "../utils/axiosInstance";
 
 const CategoryService = {
@@ -5,7 +6,7 @@ const CategoryService = {
     const req = await axiosInstance
       .get("categories")
       .then((res) => res.data)
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err));
     return req;
   },
 

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { IConfig } from "../../interfaces";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const [campany, setCampany] = useState<IConfig | null>(null);
@@ -8,7 +9,7 @@ const Home = () => {
     const req = await axiosInstance
       .get(`companies/${id}`)
       .then((res) => res.data.company)
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err));
     setCampany(req);
     return req;
   }, []);

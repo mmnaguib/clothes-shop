@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { IConfig, IInvoice } from "../../interfaces";
+import { toast } from "react-toastify";
 const Invoice = () => {
   const { id } = useParams();
   const [invoiceDetail, setInvoiceDetail] = useState<IInvoice | null>(null);
@@ -13,7 +14,7 @@ const Invoice = () => {
     const req = await axiosInstance
       .get(`invoices/${id}`)
       .then((res) => res.data.invoice)
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err));
     setInvoiceDetail(req);
   }, []);
 
@@ -21,7 +22,7 @@ const Invoice = () => {
     const req = await axiosInstance
       .get(`companies/${id}`)
       .then((res) => res.data.company)
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err));
     setCampany(req);
     return req;
   }, []);
@@ -53,7 +54,12 @@ const Invoice = () => {
       >
         طباعة
       </button>
-      <h3>تيا استور (Ts)</h3>
+      <h3>تيا وانس استور (T&A Store)</h3>
+      <img
+        src={`${process.env.REACT_APP_SERVER_URL}uploads/1737485556300-logo.png`}
+        width={50}
+        height={50}
+      />
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>التاريخ : {invoiceDetail?.createdAt.slice(0, 10)}</div>
         <div>الوقت : {invoiceDetail?.createdAt.slice(12, 20)}</div>
@@ -68,6 +74,7 @@ const Invoice = () => {
             <th>الصنف</th>
             <th>الكمية</th>
             <th>السعر</th>
+            <th>اللون</th>
             <th>الاجمالي</th>
           </tr>
         </thead>
@@ -77,6 +84,7 @@ const Invoice = () => {
               <td>{product.title}</td>
               <td>{product.quantity}</td>
               <td>{product.price}</td>
+              <td>{product.color}</td>
               <td>{product.price * product.quantity}</td>
             </tr>
           ))}
@@ -86,11 +94,11 @@ const Invoice = () => {
         <table style={{ width: "100%" }}>
           <tbody>
             <tr>
-              <td style={{ width: "40%" }}>
+              <td style={{ width: "43%" }}>
                 <h3>الاجمالي</h3>
               </td>
               <td>
-                <h3>{totalQuantity}</h3>
+                <h3>{totalQuantity} قطعة</h3>
               </td>
               <td style={{ textAlign: "left" }}>
                 <h3>{invoiceDetail?.totalAmount} جنيه</h3>

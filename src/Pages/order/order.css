@@ -9,9 +9,9 @@
   max-height: 400px;
   overflow-y: auto;
   z-index: 1;
-  left: 52%;
+  left: 40.7%;
   transform: translateX(-50%);
-  top: 40px;
+  top: 43px;
 }
 
 .filteredProduct li {
@@ -36,13 +36,8 @@
   border-collapse: collapse;
   border-color: #ddd;
 }
-
-.invoicesTable thead {
-  background-color: #007bff;
-}
 .invoicesTable thead th {
   padding: 10px;
-  color: #fff;
 }
 .invoicesTable tbody tr:nth-of-type(2n) {
   background-color: #e9e9e9;
@@ -50,6 +45,7 @@
 .invoicesTable tbody td {
   font-weight: bold;
   font-size: 18px;
+  padding: 10px 0;
 }
 .InvoiceTableBtn {
   color: #fff;
@@ -67,6 +63,15 @@
   display: block;
   margin-top: -2px;
   font-size: 18px;
+}
+
+.invoicePrintBtn {
+  background-color: #007bff;
+  width: 100px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  height: 35px;
+  color: #fff;
 }
 
 @media print {

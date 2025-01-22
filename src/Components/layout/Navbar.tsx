@@ -15,7 +15,9 @@ const Navbar = () => {
         <NavLink to="/products"> المنتجات</NavLink>
         <NavLink to="/add-order"> إضافة فاتورة</NavLink>
         <NavLink to="/categories"> الاقسام</NavLink>
-        <button onClick={() => logoutHandler()}>logout</button>
+        <button className="logoutBtn" onClick={() => logoutHandler()}>
+          <i className="fa-solid fa-sign-out"></i>
+        </button>
       </div>
     </div>
   );

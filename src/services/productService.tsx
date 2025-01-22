@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { IStock } from "../interfaces";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -6,7 +7,7 @@ const ProductService = {
     const req = await axiosInstance
       .get("products")
       .then((res) => res.data.products)
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err));
     return req;
   },
 

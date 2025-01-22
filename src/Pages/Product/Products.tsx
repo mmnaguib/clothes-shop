@@ -19,7 +19,6 @@ const Products = () => {
     setLoading(true);
     try {
       const res: IProductProps[] = await ProductService.getAllProgucts();
-      console.log(res);
       setProducts(res);
       setFilteredProducts(res);
 
@@ -60,6 +59,10 @@ const Products = () => {
       );
     }
 
+    // filtered = filtered.filter((product: IProductProps) =>
+    //   product.stock.some((item) => item.quantity > 0)
+    // );
+
     setFilteredProducts(filtered);
   }, [products, search, selectedCategory]);
 
@@ -69,38 +72,62 @@ const Products = () => {
 
   const deleteProduct = async (id: string) => {
     const res = await ProductService.deleteProducts(id);
-    console.log(res);
     setProducts((prev) => prev.filter((p) => p._id !== res.data.product._id));
   };
 
   const productCard = () => {
     return filteredProducts.map((product: IProductProps) => (
       <div className="product-card" key={product._id}>
-        <img
-          src={`${process.env.REACT_APP_SERVER_URL}${product?.image}`}
-          alt=""
-          width={"100%"}
-          height={"100%"}
-        />
-        <b>السعر : ${product.price}</b>
-        <b>المنتج : {product.title}</b>
-        <b>القسم : {product.categoryId.name}</b>
         <div>
-          <b>تفاصيل المخزون:</b>
-          <ul>
-            {product.stock.map((item, index) => (
-              <li key={index}>
-                المقاس: {item.size} | اللون: {item.color} | الكمية:{" "}
-                {item.quantity}
-              </li>
-            ))}
-          </ul>
+          <img
+            src={`${process.env.REACT_APP_SERVER_URL}${product?.image}`}
+            alt=""
+            width={"100%"}
+            height={"100%"}
+          />
         </div>
-        {decoded.isAdmin && (
-          <button onClick={() => deleteProduct(product._id)}>
-            <i className="fa-solid fa-times"></i>
-          </button>
-        )}
+        <div>
+          <b>السعر : {product.price}$</b>
+          <b>المنتج : {product.title}</b>
+          <b>القسم : {product.categoryId.name}</b>
+          <div>
+            <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+              <table
+                border={1}
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  textAlign: "center",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th>المقاس</th>
+                    <th>اللون</th>
+                    <th>الكمية</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {product.stock.map((item, index) => (
+                    <tr>
+                      <td>{item.size}</td>
+                      <td>{item.color}</td>
+                      <td>{item.quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ul>
+          </div>
+          {decoded.isAdmin && (
+            <button
+              className="removeProductBtn"
+              onClick={() => deleteProduct(product._id)}
+            >
+              <i className="fa-solid fa-times"></i>
+            </button>
+          )}
+        </div>
       </div>
     ));
   };
