@@ -4,6 +4,8 @@ import Button from "../../Components/Button";
 import { ICategoryProps, IProductProps } from "../../interfaces";
 import CategoryService from "../../services/categoryService";
 import ProductService from "../../services/productService";
+import { productColors, productSizes } from "../../data";
+import { toast } from "react-toastify";
 
 const AddProduct = ({
   setProducts,
@@ -52,8 +54,16 @@ const AddProduct = ({
       newStockEntry.color &&
       newStockEntry.quantity > 0
     ) {
+      const exists = stock.some(
+        (item) =>
+          item.size === newStockEntry.size && item.color === newStockEntry.color
+      );
+      if (exists) {
+        toast.warning("هذا الإدخال موجود بالفعل في المخزون!");
+        return;
+      }
       setStock([...stock, newStockEntry]);
-      setNewStockEntry({ size: "", color: "", quantity: 0 });
+      setNewStockEntry({ size: "", color: "", quantity: 1 });
     }
   };
 
@@ -74,6 +84,14 @@ const AddProduct = ({
       res.data.product,
     ]);
 
+    toast.success("تمت إضافة المنتج بنجاح!");
+
+    setTitle("");
+    setDescription("");
+    setPrice(0);
+    setImage(null);
+    setCategoryId("");
+    setStock([]);
     setOpenPopup(false);
   };
 
@@ -157,11 +175,11 @@ const AddProduct = ({
                       <option value="" disabled>
                         اختر المقاس
                       </option>
-                      <option value="M">Medium</option>
-                      <option value="L">Large</option>
-                      <option value="XL">XLarge</option>
-                      <option value="2XL">2XLarge</option>
-                      <option value="3XL">3XLarge</option>
+                      {productSizes.map((size) => (
+                        <option key={size.value} value={size.value}>
+                          {size.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div>
@@ -170,25 +188,18 @@ const AddProduct = ({
                       onChange={(e) =>
                         setNewStockEntry((prev) => ({
                           ...prev,
-                          color: e.target.value,
+                          color: e.target.value, // سيحفظ Hex code هنا
                         }))
                       }
                     >
                       <option value="" disabled>
                         اختر اللون
                       </option>
-                      <option value="أحمر">أحمر</option>
-                      <option value="أخضر">أخضر</option>
-                      <option value="أزرق">أزرق</option>
-                      <option value="أسود">أسود</option>
-                      <option value="أبيض">أبيض</option>
-                      <option value="أصفر">أصفر</option>
-                      <option value="وردي">وردي</option>
-                      <option value="أرجواني">أرجواني</option>
-                      <option value="برتقالي">برتقالي</option>
-                      <option value="بني">بني</option>
-                      <option value="رمادي">رمادي</option>
-                      <option value="بيج">بيج</option>
+                      {productColors.map((color) => (
+                        <option key={color.hex} value={color.hex}>
+                          {color.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div>

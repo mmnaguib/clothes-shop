@@ -26,7 +26,12 @@ const AddCateory = ({
       <button
         className="searchInput"
         onClick={() => setOpenPopup(true)}
-        style={{ width: "50px", background: "#28a745", color: "#fff" }}
+        style={{
+          width: "50px",
+          background: "#28a745",
+          color: "#fff",
+          margin: "10px 0",
+        }}
         title="اضف قسم جديد"
       >
         <i className="fa-solid fa-plus fa-lg"></i>

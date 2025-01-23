@@ -55,8 +55,8 @@ const Categories = () => {
       <table border={1} className="invoicesTable">
         <thead>
           <tr>
-            <th>#</th>
-            <th>القسم</th>
+            <th style={{ width: "5%" }}>#</th>
+            <th style={{ width: "85%" }}>القسم</th>
             <th className="actionCell">Actions</th>
           </tr>
         </thead>

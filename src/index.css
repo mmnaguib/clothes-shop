@@ -3,6 +3,9 @@
   font-family: "Tajawal";
   box-sizing: border-box;
 }
+:root {
+  --main-color: #007bff;
+}
 body {
   margin: 0;
   font-family: "Tajawal";

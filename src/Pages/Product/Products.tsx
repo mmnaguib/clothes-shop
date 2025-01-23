@@ -3,6 +3,7 @@ import ProductService from "../../services/productService";
 import { ICategoryProps, IProductProps } from "../../interfaces";
 import "./product.css";
 import AddProduct from "./AddProduct";
+import { formatPrice } from "../../utils/MoneyFormat";
 
 const Products = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
@@ -87,38 +88,53 @@ const Products = () => {
           />
         </div>
         <div>
-          <b>السعر : {product.price}$</b>
-          <b>المنتج : {product.title}</b>
-          <b>القسم : {product.categoryId.name}</b>
-          <div>
-            <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-              <table
-                border={1}
-                style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  textAlign: "center",
-                }}
-              >
-                <thead>
-                  <tr>
-                    <th>المقاس</th>
-                    <th>اللون</th>
-                    <th>الكمية</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {product.stock.map((item, index) => (
-                    <tr>
-                      <td>{item.size}</td>
-                      <td>{item.color}</td>
-                      <td>{item.quantity}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </ul>
-          </div>
+          <b className="productPrice">{formatPrice(product.price)}</b>
+          <b className="productTitle">{product.title}</b>
+          <table
+            border={1}
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "20px",
+              backgroundColor: "#f7f7f7",
+            }}
+          >
+            <thead>
+              <tr>
+                <th>المقاس</th>
+                <th>اللون</th>
+                <th>الكمية</th>
+              </tr>
+            </thead>
+            <tbody>
+              {product.stock.map((item, index) => (
+                <tr>
+                  <td>{item.size}</td>
+                  <td>
+                    <span
+                      style={{
+                        display: "block",
+                        height: "30px",
+                        width: "80%",
+                        margin: "auto",
+                        backgroundColor: item.color,
+                      }}
+                    ></span>
+                  </td>
+                  <td>{item.quantity}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <b
+            style={{ margin: "10px 0", textAlign: "left" }}
+            onClick={() => setSelectedCategory(product.categoryId.name)}
+          >
+            {product.categoryId.name}
+          </b>
           {decoded.isAdmin && (
             <button
               className="removeProductBtn"
