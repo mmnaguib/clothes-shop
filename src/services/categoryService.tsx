@@ -19,6 +19,10 @@ const CategoryService = {
   editCateory: async (id: string, name: string) => {
     return await axiosInstance.put(`categories/${id}`, { name });
   },
+
+  getCategoriesCount: async () => {
+    return await axiosInstance.get(`categories/count`);
+  },
 };
 
 export default CategoryService;

@@ -92,7 +92,6 @@ const Config = () => {
       }
     } catch (error) {
       toast.error("حدث خطأ أثناء إضافة الشركة. يرجى المحاولة مرة أخرى.");
-      console.error("Error adding company:", error);
     }
   };
 

@@ -33,7 +33,7 @@ const AddOrder: React.FC = () => {
       const res = await ProductService.getAllProgucts();
       setProducts(res);
     } catch (error) {
-      console.error("خطأ في جلب المنتجات:", error);
+      toast.error("خطأ في جلب المنتجات");
     }
   };
 
@@ -171,12 +171,12 @@ const AddOrder: React.FC = () => {
 
   const saveInvoice = async () => {
     if (!customerName.trim()) {
-      alert("يرجى إدخال اسم العميل.");
+      toast.warning("يرجى إدخال اسم العميل.");
       return;
     }
 
     if (invoiceProducts.length === 0) {
-      alert("يرجى إضافة منتجات إلى الفاتورة.");
+      toast.warning("يرجى إضافة منتجات إلى الفاتورة.");
       return;
     }
 
@@ -194,8 +194,7 @@ const AddOrder: React.FC = () => {
         setInvoiceProducts([]);
       }
     } catch (error) {
-      console.error("خطأ أثناء حفظ الفاتورة:", error);
-      alert("حدث خطأ أثناء حفظ الفاتورة.");
+      toast.error("خطأ أثناء حفظ الفاتورة:");
     }
     navigate("/orders");
   };

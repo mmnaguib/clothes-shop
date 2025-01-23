@@ -3,6 +3,7 @@ import { ICategoryProps } from "../../interfaces";
 import CategoryService from "../../services/categoryService";
 import AddCateory from "./AddCateory";
 import EditCategory from "./EditCategory";
+import { toast } from "react-toastify";
 
 const Categories = () => {
   const [categories, setCategories] = useState<ICategoryProps[]>([]);
@@ -16,7 +17,7 @@ const Categories = () => {
       const res: ICategoryProps[] = await CategoryService.getAllCategories();
       setCategories(res);
     } catch (error) {
-      console.error("خطأ في جلب الاقسام:", error);
+      toast.error("خطأ في جلب الاقسام");
     } finally {
       setLoading(false);
     }

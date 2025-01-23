@@ -4,6 +4,7 @@ import { ICategoryProps, IProductProps } from "../../interfaces";
 import "./product.css";
 import AddProduct from "./AddProduct";
 import { formatPrice } from "../../utils/MoneyFormat";
+import { toast } from "react-toastify";
 
 const Products = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
@@ -33,7 +34,7 @@ const Products = () => {
 
       setUiCategories(uniqueCategories);
     } catch (error) {
-      console.error("خطأ في جلب المنتجات:", error);
+      toast.error("خطأ في جلب المنتجات");
     } finally {
       setLoading(false);
     }

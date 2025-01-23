@@ -38,7 +38,7 @@ const AddProduct = ({
       const res = await CategoryService.getAllCategories();
       setCategories(res);
     } catch (error) {
-      console.error("خطأ في جلب الاقسام:", error);
+      toast.error("خطأ في جلب الاقسام");
     }
   }, []);
 
@@ -109,7 +109,7 @@ const AddProduct = ({
     const reader = new FileReader();
     reader.onload = async (event) => {
       if (!event.target) {
-        console.error("حدث خطأ أثناء قراءة الملف");
+        toast.error("حدث خطأ أثناء قراءة الملف");
         return;
       }
 
@@ -149,10 +149,10 @@ const AddProduct = ({
           );
 
           setProducts((prevProducts) => [...prevProducts, res.data.product]);
-          alert("تمت إضافة المنتجات بنجاح!");
+          toast.success("تمت إضافة المنتجات بنجاح!");
           setOpenPopup(false);
         } catch (error) {
-          console.error(`خطأ أثناء إضافة المنتج: ${product.title}`, error);
+          toast.error(`خطأ أثناء إضافة المنتج: ${product.title}`);
         }
       }
     };

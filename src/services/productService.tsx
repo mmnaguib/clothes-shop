@@ -42,6 +42,10 @@ const ProductService = {
   // editProducts: async (id: string, name: string) => {
   //   return await axiosInstance.put(`products/${id}`, { name });
   // },
+
+  getProductsCount: async () => {
+    return await axiosInstance.get(`products/count`);
+  },
 };
 
 export default ProductService;
