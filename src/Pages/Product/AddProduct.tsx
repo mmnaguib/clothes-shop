@@ -6,6 +6,7 @@ import CategoryService from "../../services/categoryService";
 import ProductService from "../../services/productService";
 import { productColors, productSizes } from "../../data";
 import { toast } from "react-toastify";
+import * as XLSX from "xlsx";
 
 const AddProduct = ({
   setProducts,
@@ -45,6 +46,8 @@ const AddProduct = ({
     const files = e.target.files;
     if (files && files.length > 0) {
       setImage(files[0]);
+    } else {
+      setImage(null);
     }
   };
 
@@ -99,8 +102,66 @@ const AddProduct = ({
     fetchCategories();
   }, [fetchCategories]);
 
+  const handleExcelUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      if (!event.target) {
+        console.error("حدث خطأ أثناء قراءة الملف");
+        return;
+      }
+
+      // قراءة البيانات من الملف
+      const data = new Uint8Array(event.target.result as ArrayBuffer);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0]; // اسم أول شيت
+      const sheet = workbook.Sheets[sheetName];
+
+      // تحويل بيانات الشيت إلى JSON
+      const jsonData: {
+        title: string;
+        description: string;
+        price: number;
+        categoryId: string;
+        size: string;
+        color: string;
+        quantity: number;
+        imageUrl: File;
+      }[] = XLSX.utils.sheet_to_json(sheet);
+
+      for (const product of jsonData) {
+        try {
+          const res = await ProductService.addNewProduct(
+            product.title,
+            product.description,
+            product.price,
+            product.imageUrl,
+            product.categoryId,
+            [
+              {
+                size: product.size,
+                color: product.color,
+                quantity: product.quantity,
+              },
+            ]
+          );
+
+          setProducts((prevProducts) => [...prevProducts, res.data.product]);
+          alert("تمت إضافة المنتجات بنجاح!");
+          setOpenPopup(false);
+        } catch (error) {
+          console.error(`خطأ أثناء إضافة المنتج: ${product.title}`, error);
+        }
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
+
   return (
-    <div>
+    <>
       <button
         className="searchInput"
         onClick={() => setOpenPopup(true)}
@@ -109,6 +170,19 @@ const AddProduct = ({
       >
         <i className="fa-solid fa-plus fa-lg"></i>
       </button>
+      <form onSubmit={addProductHandler}>
+        <div className="upload-button-container">
+          <label htmlFor="uploadExcel" className="upload-button">
+            <i className="fa-solid fa-file-excel"></i> ارفع المنتجات (Excel)
+            <input
+              type="file"
+              id="uploadExcel"
+              accept=".xlsx, .xls"
+              onChange={handleExcelUpload}
+            />
+          </label>
+        </div>
+      </form>
       {openPopup && (
         <div className="popupContainer" onClick={() => setOpenPopup(false)}>
           <div
@@ -151,7 +225,6 @@ const AddProduct = ({
                   type="file"
                   label="صورة المنتج"
                   onChange={handleFileChange}
-                  required
                 />
               </div>
               <div
@@ -267,7 +340,7 @@ const AddProduct = ({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

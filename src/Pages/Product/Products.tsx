@@ -161,6 +161,7 @@ const Products = () => {
           marginBottom: "15px",
           justifyContent: "center",
           marginTop: "70px",
+          alignItems: "center",
         }}
       >
         {/* البحث في المنتجات */}

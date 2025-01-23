@@ -80,13 +80,20 @@ const AddOrder: React.FC = () => {
     if (filteredProducts.length === 0) return;
 
     if (e.key === "ArrowDown") {
+      e.preventDefault();
       setHighlightedIndex((prevIndex) =>
         prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : 0
       );
     } else if (e.key === "ArrowUp") {
+      e.preventDefault();
       setHighlightedIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : filteredProducts.length - 1
       );
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlightedIndex !== -1) {
+        handleAddProduct(filteredProducts[highlightedIndex]);
+      }
     }
   };
 
@@ -230,10 +237,11 @@ const AddOrder: React.FC = () => {
         />
         {filteredProducts.length > 0 && (
           <ul className="filteredProduct">
-            {filteredProducts.map((product) => (
+            {filteredProducts.map((product, index) => (
               <li
                 key={product.stockItemId}
                 onClick={() => handleAddProduct(product)}
+                className={highlightedIndex === index ? "highlighted" : ""}
               >
                 {product.title} - {product.size} - {product.color} (متوفر:{" "}
                 {product.quantity})
@@ -272,7 +280,7 @@ const AddOrder: React.FC = () => {
                   >
                     <button
                       onClick={() => decreaseQuantity(index)}
-                      disabled={item.quantity == 1}
+                      disabled={item.quantity === 1}
                       style={{
                         cursor: item.quantity === 1 ? "not-allowed" : "pointer",
                         opacity:

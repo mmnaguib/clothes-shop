@@ -59,6 +59,7 @@ const Invoice = () => {
         src={`${process.env.REACT_APP_SERVER_URL}uploads/1737485556300-logo.png`}
         width={50}
         height={50}
+        alt="logo "
       />
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>التاريخ : {invoiceDetail?.createdAt.slice(0, 10)}</div>

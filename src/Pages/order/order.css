@@ -101,3 +101,12 @@
     margin: 5px 0 0 0;
   }
 }
+
+.filteredProduct li:hover {
+  background-color: #f0f0f0;
+}
+
+.filteredProduct li.highlighted {
+  background-color: #eaeaea; /* لون تمييز */
+  color: #000;
+}

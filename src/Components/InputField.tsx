@@ -16,7 +16,6 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   label,
-  required,
   ...rest
 }) => {
   return (
@@ -28,7 +27,6 @@ const InputField: React.FC<InputFieldProps> = ({
         placeholder={label}
         value={value}
         onChange={onChange}
-        required
         {...rest}
       />
     </div>
