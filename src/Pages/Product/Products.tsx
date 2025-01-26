@@ -5,6 +5,7 @@ import "./product.css";
 import AddProduct from "./AddProduct";
 import { formatPrice } from "../../utils/MoneyFormat";
 import { toast } from "react-toastify";
+import Alert from "../../Components/Alert/Alert";
 
 const Products = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
@@ -192,11 +193,11 @@ const Products = () => {
       </div>
 
       {/* ظهور المنتجات المفلترة */}
-      <div className="productCards">
-        {filteredProducts.length > 0
-          ? productCard()
-          : "لا يوجد منتج بهذا الاسم"}
-      </div>
+      {filteredProducts.length > 0 ? (
+        <div className="productCards">{productCard()}</div>
+      ) : (
+        <Alert type="info">لا يوجد منتج بهذا الاسم</Alert>
+      )}
     </>
   );
 };

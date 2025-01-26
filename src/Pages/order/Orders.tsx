@@ -3,7 +3,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { IInvoice } from "../../interfaces";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+/*السلام عليكم انا محمد نجيب فرونت اند ديفيلوبر شغال في الشركة من يناير 2021 */
 const Orders = () => {
   const [allOrders, setAllOrders] = useState<IInvoice[]>([]);
   const navigate = useNavigate();
@@ -19,14 +19,14 @@ const Orders = () => {
     getAllOrders();
   }, [getAllOrders]);
   return (
-    <div>
+    <div style={{ marginTop: "70px" }}>
       <table border={1} className="invoicesTable">
-        <thead style={{ backgroundColor: "#007bff" }}>
+        <thead>
           <tr>
-            <th style={{ color: "#fff" }}>اسم العميل</th>
-            <th style={{ color: "#fff" }}>المنتجات</th>
-            <th style={{ color: "#fff" }}>الاجمالي</th>
-            <th style={{ color: "#fff" }}>الفاتورة</th>
+            <th>اسم العميل</th>
+            <th>المنتجات</th>
+            <th>الاجمالي</th>
+            <th>الفاتورة</th>
           </tr>
         </thead>
         <tbody>
@@ -54,10 +54,7 @@ const Orders = () => {
                   <table style={{ width: "100%", borderCollapse: "collapse" }}>
                     <tbody>
                       {order.products.map((product) => (
-                        <tr
-                          key={product._id}
-                          style={{ borderBottom: "1px solid #ddd" }}
-                        >
+                        <tr key={product._id} className="insideTableTr">
                           <td style={{ width: "70%" }}>{product.title}</td>
                           <td style={{ width: "10%" }}>{product.price}</td>
                           <td style={{ width: "10%" }}>{product.quantity}</td>

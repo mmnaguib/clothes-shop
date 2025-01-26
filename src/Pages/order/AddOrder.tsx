@@ -208,15 +208,7 @@ const AddOrder: React.FC = () => {
           placeholder="اسم العميل"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
-          style={{
-            width: "300px",
-            marginBottom: "20px",
-            padding: "10px",
-            outline: "none",
-            border: 0,
-            marginLeft: "10px",
-            borderRadius: "4px",
-          }}
+          className="customerNameInput"
         />
         <input
           type="text"
@@ -224,15 +216,7 @@ const AddOrder: React.FC = () => {
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           onKeyDown={handleKeyDown}
-          style={{
-            width: "500px",
-            marginBottom: "20px",
-            padding: "10px",
-            outline: "none",
-            border: 0,
-            marginLeft: "10px",
-            borderRadius: "4px",
-          }}
+          className="productSearchInput"
         />
         {filteredProducts.length > 0 && (
           <ul className="filteredProduct">
@@ -269,14 +253,7 @@ const AddOrder: React.FC = () => {
                   <td>{item.title}</td>
                   <td>{item.size}</td>
                   <td>{item.color}</td>
-                  <td
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "20px",
-                      border: 0,
-                    }}
-                  >
+                  <td className="quantityCell">
                     <button
                       onClick={() => decreaseQuantity(index)}
                       disabled={item.quantity === 1}
@@ -310,13 +287,19 @@ const AddOrder: React.FC = () => {
                   </td>
                   <td>{item.price}</td>
                   <td>{item.total.toFixed(2)}</td>
-                  <td>
+                  <td style={{ position: "relative" }}>
                     <button
                       onClick={() =>
                         setInvoiceProducts((prev) =>
                           prev.filter((_, idx) => idx !== index)
                         )
                       }
+                      className="removeProductBtn"
+                      style={{
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%,-50%)",
+                      }}
                     >
                       <i className="fa-solid fa-times"></i>
                     </button>
@@ -325,13 +308,15 @@ const AddOrder: React.FC = () => {
               ))}
             </tbody>
           </table>
-          <div style={{ fontSize: "30px", textAlign: "right" }}>
+          <div className="totalContent">
             <b>
               الإجمالي: {totalAmount.toFixed(2)} جنيه{" "}
-              <i className="fa-solid fa-money-bill"></i>
+              {/* <i className="fa-solid fa-money-bill"></i> */}
             </b>
           </div>
-          <button onClick={saveInvoice}>حفظ الفاتورة</button>
+          <button className="invoicePrintBtn" onClick={saveInvoice}>
+            حفظ الفاتورة
+          </button>
         </>
       )}
     </div>

@@ -50,6 +50,7 @@ const Invoice = () => {
       <button
         id="printBtn"
         onClick={() => window.print()}
+        className="invoicePrintBtn"
         style={{ position: "absolute", left: "10px", top: "10px" }}
       >
         طباعة

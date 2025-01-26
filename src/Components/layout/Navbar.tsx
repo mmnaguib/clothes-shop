@@ -11,10 +11,11 @@ const Navbar = () => {
     <div className="navbar">
       <div>
         <NavLink to="/home"> الرئيسية</NavLink>
-        <NavLink to="/config"> الاعدادات</NavLink>
+        <NavLink to="/categories"> الاقسام</NavLink>
         <NavLink to="/products"> المنتجات</NavLink>
         <NavLink to="/add-order"> إضافة فاتورة</NavLink>
-        <NavLink to="/categories"> الاقسام</NavLink>
+        <NavLink to="/orders"> الطلبات</NavLink>
+        <NavLink to="/config"> الاعدادات</NavLink>
         <button className="logoutBtn" onClick={() => logoutHandler()}>
           <i className="fa-solid fa-sign-out"></i>
         </button>
