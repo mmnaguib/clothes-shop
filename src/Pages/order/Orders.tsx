@@ -3,7 +3,6 @@ import axiosInstance from "../../utils/axiosInstance";
 import { IInvoice } from "../../interfaces";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-/*السلام عليكم انا محمد نجيب فرونت اند ديفيلوبر شغال في الشركة من يناير 2021 */
 const Orders = () => {
   const [allOrders, setAllOrders] = useState<IInvoice[]>([]);
   const navigate = useNavigate();
