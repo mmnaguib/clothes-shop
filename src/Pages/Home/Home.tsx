@@ -9,8 +9,8 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const [campany, setCampany] = useState<IConfig | null>(null);
   const [productsCount, setProductCount] = useState(0);
-
   const [categoryCount, setCategoryCount] = useState(0);
+  const companyId = localStorage.getItem("companyId")!;
   const getCompanyData = useCallback(async (id: string) => {
     const req = await axiosInstance
       .get(`companies/${id}`)
@@ -30,7 +30,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    getCompanyData("678fecf48d384a6454d11bdb");
+    getCompanyData(companyId);
   }, [getCompanyData]);
 
   useEffect(() => {
@@ -55,6 +55,7 @@ const Home = () => {
             الاصناف
           </Link>
         </div>
+
         <div className="homeCard">
           <div
             style={{
@@ -71,20 +72,22 @@ const Home = () => {
           </Link>
         </div>
       </div>
-      <div>
-        {campany?.companyName}
-        <br />
-        {campany?.address}
-        <br />
-        {campany?.phoneNumber}
-        <br />
-        <img
-          src={`${process.env.REACT_APP_SERVER_URL}${campany?.image}`}
-          width={300}
-          height={300}
-          alt=""
-        />
-      </div>
+      {companyId && (
+        <div>
+          {campany?.companyName}
+          <br />
+          {campany?.address}
+          <br />
+          {campany?.phoneNumber}
+          <br />
+          <img
+            src={`${process.env.REACT_APP_SERVER_URL}${campany?.image}`}
+            width={300}
+            height={300}
+            alt=""
+          />
+        </div>
+      )}
     </>
   );
 };

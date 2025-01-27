@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const companyId = localStorage.getItem("companyId")!;
   const logoutHandler = () => {
     localStorage.removeItem("tiaStoreToken");
     window.location.reload();
@@ -15,7 +16,7 @@ const Navbar = () => {
         <NavLink to="/products"> المنتجات</NavLink>
         <NavLink to="/add-order"> إضافة فاتورة</NavLink>
         <NavLink to="/orders"> الطلبات</NavLink>
-        <NavLink to="/config"> الاعدادات</NavLink>
+        {!companyId && <NavLink to="/config"> الاعدادات</NavLink>}
         <button className="logoutBtn" onClick={() => logoutHandler()}>
           <i className="fa-solid fa-sign-out"></i>
         </button>

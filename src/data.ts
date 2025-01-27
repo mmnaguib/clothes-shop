@@ -22,3 +22,10 @@ export const productSizes = [
   { name: "4XLarge", value: "4XL" },
   { name: "5XLarge", value: "5XL" },
 ];
+
+export const getColorName = (hexCode: string) => {
+  const color = productColors.find(
+    (item) => item.hex.toLowerCase() === hexCode.toLowerCase()
+  );
+  return color ? color.name : "لون غير معروف";
+};

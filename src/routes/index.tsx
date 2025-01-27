@@ -20,7 +20,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Root />}>
-        <Route index element={<Login />} />
+        <Route index element={isLoggedIn ? <Home /> : <Login />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={isLoggedIn ? <Home /> : <Login />} />
           <Route path="config" element={isLoggedIn ? <Config /> : <Login />} />

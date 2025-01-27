@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { IConfig, IInvoice } from "../../interfaces";
 import { toast } from "react-toastify";
+import { getColorName } from "../../data";
 const Invoice = () => {
   const { id } = useParams();
   const [invoiceDetail, setInvoiceDetail] = useState<IInvoice | null>(null);
   const [campany, setCampany] = useState<IConfig | null>(null);
 
   const token = localStorage.getItem("tiaStoreToken")!;
+  const companyId = localStorage.getItem("companyId")!;
   const decoded = JSON.parse(atob(token.split(".")[1]));
   const getOrderDetail = useCallback(async (id: string) => {
     const req = await axiosInstance
@@ -28,7 +30,7 @@ const Invoice = () => {
   }, []);
 
   useEffect(() => {
-    getCompanyData("678fecf48d384a6454d11bdb");
+    getCompanyData(companyId);
   }, [getCompanyData]);
 
   const totalQuantity = useMemo(() => {
@@ -55,9 +57,9 @@ const Invoice = () => {
       >
         طباعة
       </button>
-      <h3>تيا وانس استور (T&A Store)</h3>
+      <h3>{campany?.companyName} استور (MYLO Store)</h3>
       <img
-        src={`${process.env.REACT_APP_SERVER_URL}uploads/1737485556300-logo.png`}
+        src={`${process.env.REACT_APP_SERVER_URL}${campany?.image}`}
         width={50}
         height={50}
         alt="logo "
@@ -82,11 +84,11 @@ const Invoice = () => {
         </thead>
         <tbody>
           {invoiceDetail?.products.map((product) => (
-            <tr>
+            <tr key={product._id}>
               <td>{product.title}</td>
               <td>{product.quantity}</td>
               <td>{product.price}</td>
-              <td>{product.color}</td>
+              <td>{getColorName(product.color)}</td>
               <td>{product.price * product.quantity}</td>
             </tr>
           ))}

@@ -86,7 +86,11 @@ const Config = () => {
         },
       });
 
+      console.log(res);
+
       if (res.status === 201) {
+        localStorage.setItem("companyId", res.data.company._id);
+
         navigate("/home");
         toast.success("تم إضافة الشركة بنجاح");
       }

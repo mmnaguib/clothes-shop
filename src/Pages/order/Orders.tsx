@@ -3,6 +3,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { IInvoice } from "../../interfaces";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getColorName } from "../../data";
 const Orders = () => {
   const [allOrders, setAllOrders] = useState<IInvoice[]>([]);
   const navigate = useNavigate();
@@ -57,7 +58,9 @@ const Orders = () => {
                           <td style={{ width: "70%" }}>{product.title}</td>
                           <td style={{ width: "10%" }}>{product.price}</td>
                           <td style={{ width: "10%" }}>{product.quantity}</td>
-                          <td style={{ width: "10%" }}>{product.color}</td>
+                          <td style={{ width: "10%" }}>
+                            {getColorName(product.color)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

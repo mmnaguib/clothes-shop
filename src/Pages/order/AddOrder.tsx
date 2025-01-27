@@ -5,6 +5,7 @@ import "./order.css";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { getColorName } from "../../data";
 
 const AddOrder: React.FC = () => {
   const navigate = useNavigate();
@@ -252,7 +253,7 @@ const AddOrder: React.FC = () => {
                 <tr key={index}>
                   <td>{item.title}</td>
                   <td>{item.size}</td>
-                  <td>{item.color}</td>
+                  <td>{getColorName(item.color)}</td>
                   <td className="quantityCell">
                     <button
                       onClick={() => decreaseQuantity(index)}
